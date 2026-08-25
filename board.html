@@ -1,0 +1,635 @@
+<title>Bullseye Derby Gauntlet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+
+<style>
+  /* ── Light is the base set. Every colour is defined here and only here. ── */
+  :root {
+    --ink:        #17141f;
+    --paper:      #f5f4f7;
+    --surface:    #ffffff;
+    --surface-2:  #eceaf1;
+    --line:       #d7d3de;
+    --line-soft:  #e5e2ea;
+    --text:       #17141f;
+    --text-2:     #55506a;
+    --text-3:     #7d7791;
+
+    --bulb:       #b06a05;   /* midway bulb, darkened for contrast on paper */
+    --bulb-bg:    #fdf0dc;
+    --bulb-line:  #eab866;
+    --drape:      #7e2233;
+
+    --pass:       #1f6b46;
+    --pass-bg:    #e2f1e8;
+    --alarm:      #a5341f;
+    --alarm-bg:   #fbe6e1;
+
+    --shadow: 0 1px 2px rgba(23,20,31,.06), 0 8px 24px -12px rgba(23,20,31,.18);
+    --radius: 10px;
+  }
+
+  /* Un-stamped document following a dark OS. Tokens only. */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink:        #0f0d16;
+      --paper:      #14111c;
+      --surface:    #1c1826;
+      --surface-2:  #241f31;
+      --line:       #362f47;
+      --line-soft:  #2a2437;
+      --text:       #eeecf3;
+      --text-2:     #b0a9c2;
+      --text-3:     #8b839f;
+
+      --bulb:       #ffab43;
+      --bulb-bg:    #2e2314;
+      --bulb-line:  #6b4a17;
+      --drape:      #d4697c;
+
+      --pass:       #63c894;
+      --pass-bg:    #14291f;
+      --alarm:      #ff9179;
+      --alarm-bg:   #2f1712;
+
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+    }
+  }
+
+  /* Explicit dark choice wins in the other direction too. */
+  :root[data-theme="dark"] {
+    --ink:        #0f0d16;
+    --paper:      #14111c;
+    --surface:    #1c1826;
+    --surface-2:  #241f31;
+    --line:       #362f47;
+    --line-soft:  #2a2437;
+    --text:       #eeecf3;
+    --text-2:     #b0a9c2;
+    --text-3:     #8b839f;
+
+    --bulb:       #ffab43;
+    --bulb-bg:    #2e2314;
+    --bulb-line:  #6b4a17;
+    --drape:      #d4697c;
+
+    --pass:       #63c894;
+    --pass-bg:    #14291f;
+    --alarm:      #ff9179;
+    --alarm-bg:   #2f1712;
+
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--text);
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px 96px;
+  }
+
+  /* ───────────────────────── masthead ───────────────────────── */
+
+  .mast {
+    border-bottom: 1px solid var(--line);
+    padding: 56px 0 32px;
+    margin-bottom: 40px;
+  }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--bulb);
+    margin: 0 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--bulb);
+    box-shadow: 0 0 0 3px var(--bulb-bg);
+    flex: none;
+  }
+
+  h1 {
+    font-family: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.4rem, 6.5vw, 3.9rem);
+    line-height: 1.02;
+    letter-spacing: -.022em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+
+  .standfirst {
+    font-size: 1.11rem;
+    line-height: 1.62;
+    color: var(--text-2);
+    max-width: 63ch;
+    margin: 0;
+  }
+  .standfirst strong { color: var(--text); font-weight: 600; }
+
+  /* ───────────────────────── stat strip ───────────────────────── */
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px;
+    background: var(--line-soft);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-top: 34px;
+  }
+  .stat { background: var(--surface); padding: 18px 20px; }
+  .stat dt {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin: 0 0 6px;
+  }
+  .stat dd {
+    margin: 0;
+    font-family: "Bricolage Grotesque", ui-sans-serif, sans-serif;
+    font-weight: 700;
+    font-size: 1.72rem;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat dd span {
+    display: block;
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 400;
+    font-size: .8rem;
+    line-height: 1.4;
+    letter-spacing: 0;
+    color: var(--text-3);
+    margin-top: 3px;
+  }
+
+  /* ───────────────────────── sections ───────────────────────── */
+
+  section { margin-top: 64px; }
+
+  h2 {
+    font-family: "Bricolage Grotesque", ui-sans-serif, sans-serif;
+    font-weight: 700;
+    font-size: 1.62rem;
+    letter-spacing: -.015em;
+    line-height: 1.2;
+    margin: 0 0 8px;
+    text-wrap: balance;
+  }
+  .sub {
+    color: var(--text-2);
+    margin: 0 0 26px;
+    max-width: 68ch;
+  }
+
+  h3 {
+    font-family: "Bricolage Grotesque", ui-sans-serif, sans-serif;
+    font-weight: 700;
+    font-size: 1.06rem;
+    letter-spacing: -.008em;
+    margin: 0 0 8px;
+    line-height: 1.3;
+  }
+
+  p { margin: 0 0 14px; }
+  p:last-child { margin-bottom: 0; }
+
+  code, .mono {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .87em;
+    font-variant-numeric: tabular-nums;
+  }
+  code {
+    background: var(--surface-2);
+    padding: .1em .38em;
+    border-radius: 4px;
+    color: var(--text);
+  }
+
+  .num { font-variant-numeric: tabular-nums; font-weight: 600; }
+
+  /* ───────────────────────── the board ───────────────────────── */
+
+  .scroller { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+
+  table { border-collapse: collapse; width: 100%; min-width: 620px; }
+
+  thead th {
+    text-align: left;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+    background: var(--surface-2);
+  }
+  tbody td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: middle;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  .t-id {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-weight: 600;
+    color: var(--text-3);
+    width: 1%;
+    font-variant-numeric: tabular-nums;
+  }
+  .t-name { font-weight: 500; }
+  .t-round {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-2);
+    white-space: nowrap;
+    width: 1%;
+  }
+  .t-state { width: 1%; white-space: nowrap; }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    padding: 4px 9px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+  .chip::before { content:""; width:6px; height:6px; border-radius:50%; background: currentColor; flex:none; }
+  .chip-pass    { color: var(--pass);  background: var(--pass-bg);  border-color: color-mix(in srgb, var(--pass) 26%, transparent); }
+  .chip-round   { color: var(--bulb);  background: var(--bulb-bg);  border-color: var(--bulb-line); }
+  .chip-pending { color: var(--text-3); background: var(--surface-2); border-color: var(--line); }
+  .chip-stale   { color: var(--alarm); background: var(--alarm-bg); border-color: color-mix(in srgb, var(--alarm) 26%, transparent); }
+
+  /* ───────────────────────── finding cards ───────────────────────── */
+
+  .findings { display: grid; gap: 18px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+  }
+  .card-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .tag {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    white-space: nowrap;
+  }
+  .card h3 { margin: 0; flex: 1 1 16ch; }
+
+  .measure {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    padding: 14px 16px;
+    margin: 14px 0;
+    background: var(--surface-2);
+    border-left: 3px solid var(--bulb);
+    border-radius: 0 6px 6px 0;
+  }
+  .measure div { min-width: 0; }
+  .measure dt {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin: 0 0 2px;
+  }
+  .measure dd {
+    margin: 0;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .96rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+
+  .card p { color: var(--text-2); }
+  .card p strong { color: var(--text); font-weight: 600; }
+
+  /* ───────────────────────── callout ───────────────────────── */
+
+  .callout {
+    border: 1px solid var(--bulb-line);
+    background: var(--bulb-bg);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+  }
+  .callout h3 { color: var(--text); }
+  .callout p { color: var(--text-2); }
+  .callout p strong { color: var(--text); }
+
+  ul.tight { margin: 0 0 14px; padding-left: 1.15em; color: var(--text-2); }
+  ul.tight li { margin-bottom: 7px; }
+  ul.tight li::marker { color: var(--bulb); }
+  ul.tight strong { color: var(--text); font-weight: 600; }
+
+  footer {
+    margin-top: 72px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    color: var(--text-3);
+    font-size: .88rem;
+  }
+  footer code { background: transparent; padding: 0; color: var(--text-2); }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 8px 18px;
+    margin-top: 14px; align-items: center;
+    font-size: .84rem; color: var(--text-3);
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <p class="eyebrow">Autonomous build loop · live board</p>
+    <h1>Bullseye Derby</h1>
+    <p class="standfirst">
+      A fairground archery-kart racer, built by a loop of paired agents: every piece gets a
+      <strong>builder</strong> and a separate <strong>critic with fresh context</strong> that never sees the
+      builder's reasoning. The critic's job is to find the gap, not to approve. A piece only passes when a
+      critic cannot name a gap a player would notice.
+    </p>
+
+    <dl class="stats">
+      <div class="stat"><dt>Pieces</dt><dd>8&nbsp;/&nbsp;18<span>passed their critic</span></dd></div>
+      <div class="stat"><dt>Tests</dt><dd>1,825<span>92 files, all green</span></dd></div>
+      <div class="stat"><dt>Commits</dt><dd>157<span>in the first 24 hours</span></dd></div>
+      <div class="stat"><dt>Test&nbsp;: source</dt><dd>1.29×<span>33,340 vs 25,902 lines</span></dd></div>
+    </dl>
+  </header>
+
+  <section>
+    <h2>The board</h2>
+    <p class="sub">
+      Round numbers are how many times a critic sent the piece back. A high number is not a problem —
+      it is the loop working. Piece 08 is on its seventh round because six critics each found something real.
+    </p>
+
+    <div class="scroller">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Piece</th><th>Round</th><th>State</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="t-id">00</td><td class="t-name">Scaffold + gauntlet contract</td><td class="t-round">r1</td><td class="t-state"><span class="chip chip-pass">passed</span></td></tr>
+          <tr><td class="t-id">01</td><td class="t-name">Measurement harness</td><td class="t-round">r1</td><td class="t-state"><span class="chip chip-pass">passed</span></td></tr>
+          <tr><td class="t-id">02</td><td class="t-name">Reference bar (Switch 2 frames)</td><td class="t-round">r3</td><td class="t-state"><span class="chip chip-pass">passed</span></td></tr>
+          <tr><td class="t-id">03</td><td class="t-name">Sim core: power → accuracy → ring → speed</td><td class="t-round">r3</td><td class="t-state"><span class="chip chip-pass">passed</span></td></tr>
+          <tr><td class="t-id">04</td><td class="t-name">Live progress page</td><td class="t-round">r2</td><td class="t-state"><span class="chip chip-pass">passed</span></td></tr>
+          <tr><td class="t-id">05</td><td class="t-name">Power input + trainer feed</td><td class="t-round">r6</td><td class="t-state"><span class="chip chip-round">in round</span></td></tr>
+          <tr><td class="t-id">06</td><td class="t-name">Renderer + camera rig</td><td class="t-round">r4</td><td class="t-state"><span class="chip chip-pass">passed</span></td></tr>
+          <tr><td class="t-id">07</td><td class="t-name">Carnival booth + midway world</td><td class="t-round">r5</td><td class="t-state"><span class="chip chip-round">in round</span></td></tr>
+          <tr><td class="t-id">08</td><td class="t-name">Racer karts + characters</td><td class="t-round">r7</td><td class="t-state"><span class="chip chip-round">in round</span></td></tr>
+          <tr><td class="t-id">09</td><td class="t-name">Bullseye target + hit feedback</td><td class="t-round">r3</td><td class="t-state"><span class="chip chip-pass">passed</span></td></tr>
+          <tr><td class="t-id">10</td><td class="t-name">Water jet VFX + splash</td><td class="t-round">r1</td><td class="t-state"><span class="chip chip-pass">passed</span></td></tr>
+          <tr><td class="t-id">11</td><td class="t-name">HUD: power, target, accuracy, positions</td><td class="t-round">r2</td><td class="t-state"><span class="chip chip-round">in round</span></td></tr>
+          <tr><td class="t-id">12</td><td class="t-name">Race Complete + leaderboard</td><td class="t-round">r6</td><td class="t-state"><span class="chip chip-round">in round</span></td></tr>
+          <tr><td class="t-id">13</td><td class="t-name">Prize wall picker</td><td class="t-round">r1</td><td class="t-state"><span class="chip chip-round">in round</span></td></tr>
+          <tr><td class="t-id">14</td><td class="t-name">Audio: midway music, water, dings, crowd</td><td class="t-round">r6</td><td class="t-state"><span class="chip chip-round">in round</span></td></tr>
+          <tr><td class="t-id">15</td><td class="t-name">Juice pass: camera, shake, transitions</td><td class="t-round">r1</td><td class="t-state"><span class="chip chip-stale">lane died</span></td></tr>
+          <tr><td class="t-id">16</td><td class="t-name">Performance: 60 fps, GPU budget, no stutter</td><td class="t-round">r5</td><td class="t-state"><span class="chip chip-round">in round</span></td></tr>
+          <tr><td class="t-id">17</td><td class="t-name">Whole-game blind A/B vs the bar</td><td class="t-round">—</td><td class="t-state"><span class="chip chip-pending">pending</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="legend">
+      <span class="chip chip-pass">passed</span> a critic found no gap ·
+      <span class="chip chip-round">in round</span> builder or critic working now ·
+      <span class="chip chip-stale">lane died</span> needs restarting ·
+      <span class="chip chip-pending">pending</span> not started
+    </p>
+  </section>
+
+  <section>
+    <h2>What the critics caught</h2>
+    <p class="sub">
+      Six findings worth a teammate's attention. Each one was invisible to the gates — the suite was green
+      through every one of them.
+    </p>
+
+    <div class="findings">
+
+      <article class="card">
+        <div class="card-head"><span class="tag">Piece 12 · critic</span><h3>One missing brace was deleting the leaderboard and the whole prize wall</h3></div>
+        <p>
+          <code>.eg-trophy</code> shipped without its closing <code>}</code>. Blink supports CSS nesting, so it
+          did not error — it parsed the <strong>63 rules that follow as descendants of a <code>&lt;canvas&gt;</code></strong>,
+          which has no element children. None of them ever matched.
+        </p>
+        <dl class="measure">
+          <div><dt>Standings heading</dt><dd>10.8 px <span style="color:var(--text-3)">(60.5 authored)</span></dd></div>
+          <div><dt>Prize wall</dt><dd>a black disc</dd></div>
+          <div><dt>Wall copies</dt><dd>all 15 at x = −960</dd></div>
+        </dl>
+        <p>
+          It was invisible to every instrument: TypeScript cannot see inside a template literal, ESLint has no
+          CSS rule here, and every screenshot still rendered <em>something</em>. Vitest printed
+          <strong>"Could not parse CSS stylesheet" nine times in one file and passed anyway</strong> — the suite
+          had been saying so for hours and it read as noise. Now pinned by a brace-balance walk in two files.
+        </p>
+      </article>
+
+      <article class="card">
+        <div class="card-head"><span class="tag">Piece 12 · round 5</span><h3>The frame drops were never main-thread work</h3></div>
+        <p>
+          Five rounds hunted a stutter at the results screen. Chromium's Long Animation Frame attribution
+          settled it: the cost was <code>backdrop-filter: blur()</code> on a viewport-sized box — the compositor,
+          not our code.
+        </p>
+        <dl class="measure">
+          <div><dt>Long frame</dt><dd>61.6 ms</dd></div>
+          <div><dt>Before render started</dt><dd>60.5 ms</dd></div>
+          <div><dt>Script over 5 ms</dt><dd>none</dd></div>
+        </dl>
+        <p>
+          That is why every layer-promotion attempt failed, and why our own GPU timer read ~1 ms straight
+          through it — the query measures our context, not the compositor. Three richer replacements were built
+          and <strong>all three measured worse than the defect</strong>, so the fix removes work instead: render
+          at 1/6 resolution behind the results and let the upscale be the defocus.
+        </p>
+      </article>
+
+      <article class="card">
+        <div class="card-head"><span class="tag">Piece 08 · critic</span><h3>The drivers were helmet balls</h3></div>
+        <p>
+          Six rounds argued about kart bodywork. Nobody had measured the characters — the half of the piece it
+          is named after.
+        </p>
+        <dl class="measure">
+          <div><dt>Head, of the character</dt><dd>74–79 %</dd></div>
+          <div><dt>Torso + arms + gloves</dt><dd>1.7–4.0 % of the kart</dd></div>
+          <div><dt>Reference frames</dt><dd>largest single mass</dd></div>
+        </dl>
+        <p>
+          Worse than a look: the rider ships a lean rig, arm pivots, a mouth and blush. At 300 px of body the
+          pose rig animated nothing a player could see. The fix was the right root —
+          <strong>the karts were too big for their drivers, not the drivers too small for the frame</strong> — and
+          shrinking the bodywork took body pixels up 4.8–7.6×.
+        </p>
+      </article>
+
+      <article class="card">
+        <div class="card-head"><span class="tag">Piece 14 · critics</span><h3>The rider could not hear the water over the midway</h3></div>
+        <p>
+          The audio panel told players a mix was fine when the on-power cue was inaudible. Round 4 proved every
+          mix it called "sounding" carried a sample — but rendered each with the other four channels
+          <em>at zero</em>, so it answered "does a sample exist", not "can I hear it".
+        </p>
+        <dl class="measure">
+          <div><dt>Cue under the fairground</dt><dd>−24.5 dB</dd></div>
+          <div><dt>Mixes affected</dt><dd>19 of 99</dd></div>
+          <div><dt>Presses to "fix" it</dt><dd>1</dd></div>
+        </dl>
+        <p>
+          The damning form: the panel warns, advises "press +", and <strong>one press clears the warning while
+          leaving the rider 24.5 dB down</strong>. The next critic then found the replacement model was validated
+          at one of 14,641 possible mixes and was 1.78 dB optimistic everywhere else — because a single noise
+          buffer feeds the cars, the crowd <em>and</em> the music, so they correlate instead of adding
+          independently.
+        </p>
+      </article>
+
+      <article class="card">
+        <div class="card-head"><span class="tag">Piece 16 · critic</span><h3>The fix for the blurry prize wall was causing it</h3></div>
+        <p>
+          Round 3 snapped every prize image to the device-pixel grid and reported success. Measured in actual
+          pixels, all fifteen were being resampled — and the snap was the entire cause.
+        </p>
+        <dl class="measure">
+          <div><dt>As shipped</dt><dd>15/15 resampled</dd></div>
+          <div><dt>Snap removed</dt><dd>0/15 — bit-identical</dd></div>
+        </dl>
+        <p>
+          Chromium snaps an image's paint rect in its own local space, so a fractional <em>layout</em> position is
+          already fine — but a transform lands <em>after</em> that snap. And because
+          <code>getBoundingClientRect</code> reports layout plus transform, <strong>the guard read the broken case
+          as perfect</strong>. Two guards ended up contradicting each other; only one had a control.
+        </p>
+      </article>
+
+      <article class="card">
+        <div class="card-head"><span class="tag">Infrastructure</span><h3>A must-fail test that had never once fired</h3></div>
+        <p>
+          A test asserting the tool refuses a software GPU adapter was green — because with no server running it
+          died on <code>ERR_CONNECTION_REFUSED</code>, a catch-all dressed that as the "correctly refused" exit
+          code, and its message check matched the tool's <em>own banner</em>, printed before any browser launched.
+        </p>
+        <p>
+          It was caught within the hour by giving infrastructure aborts their own exit code — a fix made for an
+          unrelated flake. <strong>Green in exactly the conditions CI would run in, and it had never
+          demonstrated the thing it existed to prove.</strong>
+        </p>
+      </article>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>The machine</h2>
+    <p class="sub">
+      The loop crashed this workstation five times with <code>0x119 VIDEO_SCHEDULER_INTERNAL_ERROR</code> before
+      anything read the machine's own distress signals. One crash also rearranged the desktop icons — the
+      display topology drops out during the reset and Windows re-flows the desktop to a smaller grid.
+    </p>
+    <div class="callout">
+      <h3>Two guards now sit in front of every browser launch</h3>
+      <ul class="tight">
+        <li><strong>Health.</strong> Reads the Windows event log for driver resets and recent bugchecks, and
+          refuses to launch when the machine is in distress. Unknown is not treated as healthy — a failed query
+          admits it rather than returning zero.</li>
+        <li><strong>Rate.</strong> A cross-process permit pool caps launches at <span class="num">20</span> per
+          minute — <span class="num">1,200</span>/hour against the <span class="num">2,970</span>/hour that
+          bugchecked. It waits rather than refusing.</li>
+      </ul>
+      <p>
+        The ledger has since measured this machine sitting at <strong>19 launches against a ceiling of 20</strong>,
+        continuously, at full lane count. The guard is doing its job — and that is the reason not to widen the
+        fleet rather than raise the ceiling.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>One decision outstanding</h2>
+    <div class="card">
+      <h3>These 1,825 tests have never run in CI</h3>
+      <p>
+        <code>prototype-suites.yml</code>'s matrix covers two other prototypes and not this one, so the suite only
+        ever runs when a human types the command. That workflow's own header records a previous prototype joining
+        with 25 test files that had never run.
+      </p>
+      <p>
+        Adding it is one matrix line. The argument for doing it now is the never-fired must-fail test above —
+        that is precisely the class of defect a human running tests locally will never see. The argument for the
+        short wait was the flake underneath it, <strong>which is fixed</strong>: two ten-minute waits nested
+        inside a three-minute kill, reproduced deterministically with zero browsers launched.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      Branch <code>prototype/archery-gauntlet</code> · everything on this page is pushed ·
+      board state as of the run's 157th commit.
+    </p>
+    <p>
+      Round numbers, gap text and the full decision log live in <code>progress/state.json</code>, written only by
+      the coordinator so concurrent lanes cannot clobber each other.
+    </p>
+  </footer>
+
+</div>
