@@ -1,635 +1,450 @@
-<title>Bullseye Derby Gauntlet</title>
+<title>Bullseye Derby Run Board</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
-
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-  /* ── Light is the base set. Every colour is defined here and only here. ── */
-  :root {
-    --ink:        #17141f;
-    --paper:      #f5f4f7;
-    --surface:    #ffffff;
-    --surface-2:  #eceaf1;
-    --line:       #d7d3de;
-    --line-soft:  #e5e2ea;
-    --text:       #17141f;
-    --text-2:     #55506a;
-    --text-3:     #7d7791;
-
-    --bulb:       #b06a05;   /* midway bulb, darkened for contrast on paper */
-    --bulb-bg:    #fdf0dc;
-    --bulb-line:  #eab866;
-    --drape:      #7e2233;
-
-    --pass:       #1f6b46;
-    --pass-bg:    #e2f1e8;
-    --alarm:      #a5341f;
-    --alarm-bg:   #fbe6e1;
-
-    --shadow: 0 1px 2px rgba(23,20,31,.06), 0 8px 24px -12px rgba(23,20,31,.18);
-    --radius: 10px;
+:root {
+  --ink:#17141f; --paper:#f5f4f7; --surface:#ffffff;
+  --line:#d7d3de; --line-soft:#e5e2ea; --text:#17141f; --dim:#5d5768;
+  --bulb:#b06a05; --bulb-bg:#fdf0dc; --bulb-line:#eab866;
+  --drape:#7e2233; --pass:#1f6b46; --pass-bg:#e2f1e8;
+  --alarm:#a5341f; --alarm-bg:#fbe6e1;
+  --pend:#4a4a58; --pend-bg:#ecebf0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink:#f2f0f6; --paper:#141119; --surface:#1c1825;
+    --line:#332d40; --line-soft:#272231; --text:#f2f0f6; --dim:#a49cb4;
+    --bulb:#ffab43; --bulb-bg:#3a2a12; --bulb-line:#7a5520;
+    --drape:#d8697f; --pass:#6edea7; --pass-bg:#16301f;
+    --alarm:#ff8f74; --alarm-bg:#3a1c15;
+    --pend:#b8b2c4; --pend-bg:#262231;
   }
-
-  /* Un-stamped document following a dark OS. Tokens only. */
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --ink:        #0f0d16;
-      --paper:      #14111c;
-      --surface:    #1c1826;
-      --surface-2:  #241f31;
-      --line:       #362f47;
-      --line-soft:  #2a2437;
-      --text:       #eeecf3;
-      --text-2:     #b0a9c2;
-      --text-3:     #8b839f;
-
-      --bulb:       #ffab43;
-      --bulb-bg:    #2e2314;
-      --bulb-line:  #6b4a17;
-      --drape:      #d4697c;
-
-      --pass:       #63c894;
-      --pass-bg:    #14291f;
-      --alarm:      #ff9179;
-      --alarm-bg:   #2f1712;
-
-      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
-    }
-  }
-
-  /* Explicit dark choice wins in the other direction too. */
-  :root[data-theme="dark"] {
-    --ink:        #0f0d16;
-    --paper:      #14111c;
-    --surface:    #1c1826;
-    --surface-2:  #241f31;
-    --line:       #362f47;
-    --line-soft:  #2a2437;
-    --text:       #eeecf3;
-    --text-2:     #b0a9c2;
-    --text-3:     #8b839f;
-
-    --bulb:       #ffab43;
-    --bulb-bg:    #2e2314;
-    --bulb-line:  #6b4a17;
-    --drape:      #d4697c;
-
-    --pass:       #63c894;
-    --pass-bg:    #14291f;
-    --alarm:      #ff9179;
-    --alarm-bg:   #2f1712;
-
-    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
-  }
-
-  * { box-sizing: border-box; }
-
-  body {
-    margin: 0;
-    background: var(--paper);
-    color: var(--text);
-    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  .wrap {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 0 24px 96px;
-  }
-
-  /* ───────────────────────── masthead ───────────────────────── */
-
-  .mast {
-    border-bottom: 1px solid var(--line);
-    padding: 56px 0 32px;
-    margin-bottom: 40px;
-  }
-
-  .eyebrow {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 11.5px;
-    font-weight: 600;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    color: var(--bulb);
-    margin: 0 0 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .eyebrow::before {
-    content: "";
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--bulb);
-    box-shadow: 0 0 0 3px var(--bulb-bg);
-    flex: none;
-  }
-
-  h1 {
-    font-family: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
-    font-weight: 800;
-    font-size: clamp(2.4rem, 6.5vw, 3.9rem);
-    line-height: 1.02;
-    letter-spacing: -.022em;
-    margin: 0 0 18px;
-    text-wrap: balance;
-  }
-
-  .standfirst {
-    font-size: 1.11rem;
-    line-height: 1.62;
-    color: var(--text-2);
-    max-width: 63ch;
-    margin: 0;
-  }
-  .standfirst strong { color: var(--text); font-weight: 600; }
-
-  /* ───────────────────────── stat strip ───────────────────────── */
-
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1px;
-    background: var(--line-soft);
-    border: 1px solid var(--line-soft);
-    border-radius: var(--radius);
-    overflow: hidden;
-    margin-top: 34px;
-  }
-  .stat { background: var(--surface); padding: 18px 20px; }
-  .stat dt {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: .11em;
-    text-transform: uppercase;
-    color: var(--text-3);
-    margin: 0 0 6px;
-  }
-  .stat dd {
-    margin: 0;
-    font-family: "Bricolage Grotesque", ui-sans-serif, sans-serif;
-    font-weight: 700;
-    font-size: 1.72rem;
-    line-height: 1.1;
-    letter-spacing: -.02em;
-    font-variant-numeric: tabular-nums;
-  }
-  .stat dd span {
-    display: block;
-    font-family: "IBM Plex Sans", sans-serif;
-    font-weight: 400;
-    font-size: .8rem;
-    line-height: 1.4;
-    letter-spacing: 0;
-    color: var(--text-3);
-    margin-top: 3px;
-  }
-
-  /* ───────────────────────── sections ───────────────────────── */
-
-  section { margin-top: 64px; }
-
-  h2 {
-    font-family: "Bricolage Grotesque", ui-sans-serif, sans-serif;
-    font-weight: 700;
-    font-size: 1.62rem;
-    letter-spacing: -.015em;
-    line-height: 1.2;
-    margin: 0 0 8px;
-    text-wrap: balance;
-  }
-  .sub {
-    color: var(--text-2);
-    margin: 0 0 26px;
-    max-width: 68ch;
-  }
-
-  h3 {
-    font-family: "Bricolage Grotesque", ui-sans-serif, sans-serif;
-    font-weight: 700;
-    font-size: 1.06rem;
-    letter-spacing: -.008em;
-    margin: 0 0 8px;
-    line-height: 1.3;
-  }
-
-  p { margin: 0 0 14px; }
-  p:last-child { margin-bottom: 0; }
-
-  code, .mono {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: .87em;
-    font-variant-numeric: tabular-nums;
-  }
-  code {
-    background: var(--surface-2);
-    padding: .1em .38em;
-    border-radius: 4px;
-    color: var(--text);
-  }
-
-  .num { font-variant-numeric: tabular-nums; font-weight: 600; }
-
-  /* ───────────────────────── the board ───────────────────────── */
-
-  .scroller { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
-
-  table { border-collapse: collapse; width: 100%; min-width: 620px; }
-
-  thead th {
-    text-align: left;
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: var(--text-3);
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--line);
-    white-space: nowrap;
-    background: var(--surface-2);
-  }
-  tbody td {
-    padding: 11px 16px;
-    border-bottom: 1px solid var(--line-soft);
-    vertical-align: middle;
-  }
-  tbody tr:last-child td { border-bottom: 0; }
-  .t-id {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-weight: 600;
-    color: var(--text-3);
-    width: 1%;
-    font-variant-numeric: tabular-nums;
-  }
-  .t-name { font-weight: 500; }
-  .t-round {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-variant-numeric: tabular-nums;
-    color: var(--text-2);
-    white-space: nowrap;
-    width: 1%;
-  }
-  .t-state { width: 1%; white-space: nowrap; }
-
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: .07em;
-    text-transform: uppercase;
-    padding: 4px 9px;
-    border-radius: 999px;
-    border: 1px solid transparent;
-    white-space: nowrap;
-  }
-  .chip::before { content:""; width:6px; height:6px; border-radius:50%; background: currentColor; flex:none; }
-  .chip-pass    { color: var(--pass);  background: var(--pass-bg);  border-color: color-mix(in srgb, var(--pass) 26%, transparent); }
-  .chip-round   { color: var(--bulb);  background: var(--bulb-bg);  border-color: var(--bulb-line); }
-  .chip-pending { color: var(--text-3); background: var(--surface-2); border-color: var(--line); }
-  .chip-stale   { color: var(--alarm); background: var(--alarm-bg); border-color: color-mix(in srgb, var(--alarm) 26%, transparent); }
-
-  /* ───────────────────────── finding cards ───────────────────────── */
-
-  .findings { display: grid; gap: 18px; }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 22px 24px;
-    box-shadow: var(--shadow);
-  }
-  .card-head {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
-  }
-  .tag {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: var(--text-3);
-    white-space: nowrap;
-  }
-  .card h3 { margin: 0; flex: 1 1 16ch; }
-
-  .measure {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 28px;
-    padding: 14px 16px;
-    margin: 14px 0;
-    background: var(--surface-2);
-    border-left: 3px solid var(--bulb);
-    border-radius: 0 6px 6px 0;
-  }
-  .measure div { min-width: 0; }
-  .measure dt {
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: .09em;
-    text-transform: uppercase;
-    color: var(--text-3);
-    margin: 0 0 2px;
-  }
-  .measure dd {
-    margin: 0;
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: .96rem;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    color: var(--text);
-  }
-
-  .card p { color: var(--text-2); }
-  .card p strong { color: var(--text); font-weight: 600; }
-
-  /* ───────────────────────── callout ───────────────────────── */
-
-  .callout {
-    border: 1px solid var(--bulb-line);
-    background: var(--bulb-bg);
-    border-radius: var(--radius);
-    padding: 22px 24px;
-  }
-  .callout h3 { color: var(--text); }
-  .callout p { color: var(--text-2); }
-  .callout p strong { color: var(--text); }
-
-  ul.tight { margin: 0 0 14px; padding-left: 1.15em; color: var(--text-2); }
-  ul.tight li { margin-bottom: 7px; }
-  ul.tight li::marker { color: var(--bulb); }
-  ul.tight strong { color: var(--text); font-weight: 600; }
-
-  footer {
-    margin-top: 72px;
-    padding-top: 24px;
-    border-top: 1px solid var(--line);
-    color: var(--text-3);
-    font-size: .88rem;
-  }
-  footer code { background: transparent; padding: 0; color: var(--text-2); }
-
-  .legend {
-    display: flex; flex-wrap: wrap; gap: 8px 18px;
-    margin-top: 14px; align-items: center;
-    font-size: .84rem; color: var(--text-3);
-  }
+}
+:root[data-theme="dark"] {
+  --ink:#f2f0f6; --paper:#141119; --surface:#1c1825;
+  --line:#332d40; --line-soft:#272231; --text:#f2f0f6; --dim:#a49cb4;
+  --bulb:#ffab43; --bulb-bg:#3a2a12; --bulb-line:#7a5520;
+  --drape:#d8697f; --pass:#6edea7; --pass-bg:#16301f;
+  --alarm:#ff8f74; --alarm-bg:#3a1c15;
+  --pend:#b8b2c4; --pend-bg:#262231;
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--paper); color:var(--text);
+  font:400 16px/1.55 "IBM Plex Sans", system-ui, sans-serif; }
+.wrap { max-width:78rem; margin:0 auto; padding:2.5rem 1.25rem 5rem; }
+header.top { border-bottom:2px solid var(--ink); padding-bottom:1rem; margin-bottom:1.5rem; }
+h1 { font:800 clamp(1.9rem,4vw,3rem)/1.05 "Bricolage Grotesque", system-ui, sans-serif;
+  margin:0 0 .35rem; letter-spacing:-.02em; text-wrap:balance; }
+.sub { color:var(--dim); margin:0; font-size:.95rem; }
+.stamp { font-family:"IBM Plex Mono", ui-monospace, monospace; font-size:.8rem; color:var(--dim); }
+.tally { display:flex; flex-wrap:wrap; gap:.5rem; margin:1.25rem 0 0; padding:0; list-style:none; }
+.tally li { display:flex; align-items:baseline; gap:.45rem; border:1px solid var(--line);
+  background:var(--surface); border-radius:999px; padding:.3rem .8rem; font-size:.85rem; }
+.tally b { font-family:"IBM Plex Mono", monospace; font-size:1rem; font-variant-numeric:tabular-nums; }
+.perf { margin:1rem 0 0; font-family:"IBM Plex Mono", monospace; font-size:.85rem; color:var(--dim);
+  overflow-x:auto; }
+h2 { font:600 1.35rem/1.2 "Bricolage Grotesque", system-ui, sans-serif;
+  margin:2.5rem 0 .9rem; letter-spacing:-.01em; }
+.grid { display:grid; gap:1rem; }
+.piece { background:var(--surface); border:1px solid var(--line); border-radius:10px;
+  overflow:hidden; }
+.piece > header { display:flex; align-items:center; gap:.7rem; flex-wrap:wrap;
+  padding:.7rem .9rem; border-bottom:1px solid var(--line-soft); }
+.num { font-family:"IBM Plex Mono", monospace; font-weight:600; font-size:.85rem;
+  color:var(--dim); min-width:1.6em; }
+.piece h3 { font:600 1.02rem/1.3 "IBM Plex Sans", system-ui, sans-serif; margin:0; flex:1 1 12rem; }
+.round { font-family:"IBM Plex Mono", monospace; font-size:.85rem; color:var(--dim);
+  font-variant-numeric:tabular-nums; }
+.status { font-family:"IBM Plex Mono", monospace; font-size:.72rem; text-transform:uppercase;
+  letter-spacing:.06em; padding:.16rem .5rem; border-radius:4px; border:1px solid transparent; }
+.s-passed   .status { color:var(--pass);  background:var(--pass-bg);  border-color:var(--pass); }
+.s-round    .status { color:var(--alarm); background:var(--alarm-bg); border-color:var(--alarm); }
+.s-building .status { color:var(--bulb);  background:var(--bulb-bg);  border-color:var(--bulb-line); }
+.s-pending  .status { color:var(--pend);  background:var(--pend-bg);  border-color:var(--line); }
+.gap { padding:.85rem .9rem 1rem; }
+.gap p { margin:0 0 .75rem; max-width:68ch; }
+.gap p:last-child { margin-bottom:0; }
+.gap pre { font-family:"IBM Plex Mono", monospace; font-size:.8rem; line-height:1.5;
+  background:var(--paper); border:1px solid var(--line-soft); border-radius:6px;
+  padding:.6rem .75rem; margin:0 0 .75rem; overflow-x:auto; }
+.empty { color:var(--dim); font-style:italic; margin:0; }
+ol.log { list-style:none; margin:0; padding:0; display:grid; gap:.5rem; }
+ol.log li { background:var(--surface); border:1px solid var(--line-soft); border-radius:8px;
+  padding:.55rem .8rem; font-size:.88rem; }
+ol.log time { font-family:"IBM Plex Mono", monospace; font-size:.75rem; color:var(--dim);
+  display:block; margin-bottom:.15rem; }
+footer { margin-top:3rem; padding-top:1rem; border-top:1px solid var(--line);
+  color:var(--dim); font-size:.85rem; }
+a { color:var(--drape); }
 </style>
-
 <div class="wrap">
+<header class="top">
+  <h1>Bullseye Derby Run Board</h1>
+  <p class="sub">Every piece, the gap its last critic named, and what is in flight.</p>
+  <p class="stamp">state.json updated 2026-08-25T17:22:57.687Z · page generated from the live board</p>
+  <ul class="tally">
+    <li><b>0</b> building</li>
+    <li><b>9</b> round</li>
+    <li><b>1</b> pending</li>
+    <li><b>8</b> passed</li>
+  </ul>
+  <div class="perf">perf: fps=60  p99=16.8  gpuP95=4.566  at=2026-08-25T16:44:47.210Z</div>
+</header>
 
-  <header class="mast">
-    <p class="eyebrow">Autonomous build loop · live board</p>
-    <h1>Bullseye Derby</h1>
-    <p class="standfirst">
-      A fairground archery-kart racer, built by a loop of paired agents: every piece gets a
-      <strong>builder</strong> and a separate <strong>critic with fresh context</strong> that never sees the
-      builder's reasoning. The critic's job is to find the gap, not to approve. A piece only passes when a
-      critic cannot name a gap a player would notice.
-    </p>
-
-    <dl class="stats">
-      <div class="stat"><dt>Pieces</dt><dd>8&nbsp;/&nbsp;18<span>passed their critic</span></dd></div>
-      <div class="stat"><dt>Tests</dt><dd>1,825<span>92 files, all green</span></dd></div>
-      <div class="stat"><dt>Commits</dt><dd>157<span>in the first 24 hours</span></dd></div>
-      <div class="stat"><dt>Test&nbsp;: source</dt><dd>1.29×<span>33,340 vs 25,902 lines</span></dd></div>
-    </dl>
+<h2>Pieces</h2>
+<div class="grid">
+<article class="piece s-passed" id="p00">
+  <header>
+    <span class="num">00</span>
+    <h3>Scaffold + gauntlet contract</h3>
+    <span class="round">r1</span>
+    <span class="status">passed</span>
   </header>
+  <div class="gap"><p class="empty">No gap recorded.</p></div>
+</article>
+<article class="piece s-passed" id="p01">
+  <header>
+    <span class="num">01</span>
+    <h3>Measurement harness</h3>
+    <span class="round">r1</span>
+    <span class="status">passed</span>
+  </header>
+  <div class="gap"><p class="empty">No gap recorded.</p></div>
+</article>
+<article class="piece s-passed" id="p02">
+  <header>
+    <span class="num">02</span>
+    <h3>Reference bar (Switch 2 frames)</h3>
+    <span class="round">r3</span>
+    <span class="status">passed</span>
+  </header>
+  <div class="gap"><p>PASSED. Both r2 holes (no bullseye frame, no vertical jet) were already closed in-bar by d5ae63dee; the stale RECORD was the live cost. Verified rather than trusted: 42/42 sha256 + LFS, every MANIFEST count recounted against index.json, --selftest 14/14. Independently corroborated by piece09, which opened target-01 first-hand and matched its measurements.</p></div>
+</article>
+<article class="piece s-passed" id="p03">
+  <header>
+    <span class="num">03</span>
+    <h3>Sim core: power to accuracy to ring to speed</h3>
+    <span class="round">r3</span>
+    <span class="status">passed</span>
+  </header>
+  <div class="gap"><p class="empty">No gap recorded.</p></div>
+</article>
+<article class="piece s-passed" id="p04">
+  <header>
+    <span class="num">04</span>
+    <h3>Live progress page</h3>
+    <span class="round">r2</span>
+    <span class="status">passed</span>
+  </header>
+  <div class="gap"><p class="empty">No gap recorded.</p></div>
+</article>
+<article class="piece s-round" id="p05">
+  <header>
+    <span class="num">05</span>
+    <h3>Power input + trainer feed</h3>
+    <span class="round">r6</span>
+    <span class="status">round</span>
+  </header>
+  <div class="gap"><p>ANOTHER ROUND. THE CIRCULARITY MOVED TO play-drive.mjs, IT DID NOT CLOSE.</p>
+<p>test/input/keyboard-race.test.ts:44 claims &quot;There is no constant to co-mutate.&quot; THAT IS FALSE. The constant is HAND.holdThreshold at test/input/play-drive.mjs:101, and the suite itself wires it onto BOTH SIDES of the comparison: it sets the hand's hold-vs-tap changeover (the played side), and keyboard-race.test.ts:248 asserts expect(BAR_OFFSET_FRAC).toBe(HAND_LIMITS.holdThreshold), which FORCES THE BAR'S OFFSET TO FOLLOW IT. So the bar is not an anchor - it is a function of a number in the test tree the same lane owns.</p>
+<pre>Measured, seed 20260824, dt 1/120, Hand verbatim with the four limits injected:
+    holdThreshold 0.03 (shipped)  bar 65.262  shipped 62.821 GREEN  flat-60 65.53 1st RED   tau-fast 67.78 2nd RED   flat-150 74.27 4th RED
+    holdThreshold 0.05            bar 69.318  shipped 62.540 GREEN  flat-60 62.60 1st GREEN tau-fast 65.33 1st GREEN flat-150 79.55 4th RED
+    holdThreshold 0.06            bar 71.540  shipped 62.412 GREEN  flat-60 62.97 1st GREEN tau-fast 63.05 1st GREEN flat-150 73.02 4th RED
+    holdThreshold 0.12            bar 88.573  shipped 63.516 GREEN  flat-60 62.95 1st GREEN tau-fast 61.83 1st GREEN flat-150 63.61 1st GREEN
+ONE NUMBER, 0.03 TO 0.05, TURNS TWO OF THE FOUR NAMED CONTROLS FROM RED TO GREEN. At 0.12 even flat-150 - the arm src/input/keyboard.ts:60 calls &quot;cannot sit still at all&quot;, 7.12% mean error - comes in first and clears the bar. THE SHIPPED RIDE NEVER MOVES (62.4-63.5s across the whole column); ONLY THE BAR MOVES, from 65s to 89s. Nothing anywhere asserts an absolute - not BAR_OFFSET_FRAC &lt;= 0.03, not a range on barFinishS.</pre>
+<p>The comment at keyboard-race.test.ts:98-102 argues the pin makes widening &quot;a decision somebody has to take deliberately instead of a quiet loosening of this bar&quot;. IT DOES THE EXACT OPPOSITE: the pin is what makes the loosening AUTOMATIC AND GREEN.</p>
+<p>THE FIX IS SMALL: invert the pin. Keep BAR_OFFSET_FRAC = 0.03 as a literal and assert HAND_LIMITS.holdThreshold &lt;= BAR_OFFSET_FRAC, so the hand may tap earlier but can never widen the bar. Then ship the mutation table as ARMS instead of prose - KeyboardSourceOptions.ramp already exists &quot;so a tuning sweep is a measurement rather than a rebuild&quot;, and the critic ran 15 ramp arms in 284 ms through it. Right now the suite's only must-not-pass arms are three DELIVERY faults (idle, deaf-up, deaf-down); the fault class the bar was actually built for - A MIS-TUNED RAMP THAT STILL FINISHES - is asserted NOWHERE and lives in a doc comment plus a gitignored progress/05-r5-data/mutation-runs.txt.</p>
+<p>RANKED BELOW:</p>
+<p>(1) THE SHARPNESS CLAIM IS MEASURABLY WRONG. keyboard-race.test.ts:72-73 says &quot;the nearest failing arm misses by 2.5 s the other way.&quot; flat-60 - one of the three flat-rate rows keyboard.ts:65 names as &quot;the control this tuning has to beat&quot;, and THE ONE ROW OMITTED FROM THE HEADER TABLE - misses by 0.276 s. Worse, its verdict FLIPS WITH FRAME RATE: bar 65.262 at every dt, flat-60 = 64.943 GREEN at dt 1/30, 65.539 RED at 1/60, 65.532 RED at 1/120, 65.548 RED at 1/240. The file's own test.each([1/30, 1/60, 1/240]) RUNS 1/30, so a flat-60 build goes green on one of its three framerate arms. This is the same overclaimed-margin defect r5 just corrected in keydrive: a margin that is overstated is worse than a thin one, because the next lane spends it.</p>
+<p>(2) A DOM-BINDING TEST ASSERTS A HARNESS ARTIFACT. keyboard-race.test.ts:377-379 holds ArrowDown, presses unbound KeyQ, expects axis === 0. On a bare EventTarget with the same shipped createKeyAxis, that sequence leaves AXIS = -1. It only reads 0 because SynthesizedKeyboard.press auto-releases the held key (hand.ts:129-130). That single-key model also makes BOTH ARROWS DOWN STRUCTURALLY UNREACHABLE, so the deliberate up === down -&gt; 0 design at keys.ts:50-53 can never be exercised through the new instrument, at any point in any race.</p>
+<p>(3) keydrive.mjs:1006 STILL CARRIES THE OVERCLAIM THE DOC COMMENT RETRACTED. The refusal a human actually reads still says &quot;held a scorable accuracy for seconds of it - which at V_MAX is tens of metres&quot;, then contradicts itself two lines down with &quot;covered 5m&quot;. And the same message's operator advice is BACKWARDS for the measured regime: distance DECREASES with hold length - 2s gives 8.887 m, 3s gives 5.347 m, 4/5/6s give 4.990955 m - so &quot;--hold Xs may be too short&quot; points the next operator the wrong way.</p>
+<p>CONFIRMED SOUND: 4.990955 m is right, verified INDEPENDENTLY - the critic rebuilt keydrive's drive shape in process (0 W, hold ArrowUp 4s, release, hold ArrowDown 2s) and got 4.990955 m to six decimals with no browser, a different instrument reaching the sidecar's figure exactly. Deaf ArrowUp gives 0.000000 m; deaf ArrowDown gives 4.990955 m, identical to shipped, confirming the floor is blind to half a binding exactly as r5's claim 5 says. The 1 m floor is a round number in an empty gap between 0 and 4.99 rather than a derived bound, but the comment now says precisely that, so it is honestly labelled. THE WHOLE MUTATION TABLE REPRODUCES EXACTLY (bar 65.262, shipped 62.821, 0.4/0.6 DNF 4th, 150/150 74.265 4th, 25/25 68.133 2nd, tau 0.10 67.781 2nd, 25/150 63.836, 10/80 63.093, 10/150/1.20 63.019, 10/300 64.546), and a real file edit of src/input/constants.ts gave 65.53196561423212 against the injected 65.532, so injection and rebuild agree. THE KEYDRIVE CIRCULARITY r5 DIAGNOSED IS REAL: co-mutating constants.ts and keydrive.mjs:154 left the ramp-drift pins 6/6 GREEN in a 36-case file.</p>
+<p>===== THE FLAKE: FOUND, AND IT IS NOT CONTENTION =====</p>
+<p>MECHANISM: TWO 600-SECOND WAITS NESTED INSIDE A 180-SECOND KILL. test/keydrive.test.mjs:44,51 spawns the tool with spawnSync(..., { timeout: 180_000 }). Inside that subprocess the tool inherits two machine-wide guards DESIGNED TO WAIT, each budgeted at 600s: tools/harness/launch-rate.mjs:76 DEFAULT_TIMEOUT_MS = 10 * 60_000, whose header says &quot;This file WAITS, because a launch that is merely too soon is a perfectly good launch a moment later&quot;; and tools/harness/browser-pool.mjs:223 DEFAULT_ACQUIRE_TIMEOUT_MS = 10 * 60_000 against DEFAULT_MAX_BROWSERS = 4. 180 &lt; 600 + 600. Under load the guard does its documented job, spawnSync kills the child at 180s, and expect(r.status).toBe(REFUSED) fails as &quot;expected null to be 2&quot;.</p>
+<p>REPRODUCED DETERMINISTICALLY, WITH ZERO BROWSERS LAUNCHED: pointing AG_BROWSER_SLOT_DIR at a private directory, seeding its ledger with 20 timestamps inside the 60s window, and running --prove-deaf-keys under a 20s outer timeout gives elapsed 20014 ms, status null (the test asserts 2), signal SIGTERM, ETIMEDOUT, and the launch-rate holding message.</p>
+<p>THE LOAD IS REAL, MEASURED LIVE RATHER THAN ASSUMED: the shared ledger read 19 LAUNCHES IN THE LAST 60s AGAINST A CEILING OF 20, 67 in 300s, 136 in 900s, all four permits touched inside 20s. THIS MACHINE SITS ONE LAUNCH UNDER THE CEILING CONTINUOUSLY AT CURRENT LANE COUNT, and every hold that produces is charged against a 180s kill.</p>
+<p>A SECOND DEFECT, AND IT IS THE ONE THAT MAKES THIS DANGEROUS: keydrive.mjs:1099-1101 is a catch-all mapping EVERY unexpected exception onto process.exit(REFUSED) - exit code 2, THE SAME CODE THAT MEANS &quot;the fixture was correctly refused&quot;. With the waits capped below the outer deadline the abort came back status 2, signal null: a run that never opened a browser exiting with the SUCCESS CODE OF A MUST-FAIL ARM. It survives today only because each tier-2 case also greps stdout for a specific refusal string. A caller reading the exit code alone would read &quot;the tool works&quot; from a run that never started.</p>
+<p>SYSTEMIC, NOT KEYDRIVE-ONLY: test/racefilm.test.mjs:43,47 has the identical BROWSER_MS = 180_000 nesting across 8 browser cases. The same flake is armed there.</p>
+<p>THE FIX, AND IT IS A CONTROL RATHER THAN A WIDER TIMEOUT: cap the tool's own wait budgets BELOW the test's kill deadline (AG_LAUNCH_RATE_TIMEOUT_MS, AG_BROWSER_ACQUIRE_TIMEOUT_MS in the spawn env), and ship a PURE assertion that the guards' budgets plus a drive budget fit inside BROWSER_MS, so nobody can raise a guard default without this file reddening. Separately, give infrastructure aborts THEIR OWN EXIT CODE so a saturated fleet cannot wear a refusal's clothes. Verified: with the caps in place the same saturated fleet produced &quot;LaunchRateTimeoutError: waited 4s for the launch rate to fall and it did not: 20 launches in the last 60s against a ceiling of 20&quot; in 4.6s - a true statement about the fleet instead of &quot;expected null to be 2&quot;.</p>
+<p>ON THE CI QUESTION, and this matters for the decision Adam is holding: THIS FLAKE IS LOCAL-ONLY. One lane means an empty queue and the guards never hold. It is a reason to fix the nesting BEFORE adding CI, not a reason CI will be red.</p>
+<p>CONSTRAINT ON THIS CRITIC's RUN: its worktree isolation was pinned to a FraggleRock worktree rather than FraggleRock-ag, so all git and all writes to the shared checkout were refused. It did every mutation in a throwaway copy under TEMP with a junction to the real node_modules and cleaned up afterwards. IT LANDED NOTHING - the fixes above need a lane with write access. It also did NOT drive tools/keydrive.mjs against a real browser build; every keydrive claim is textual or reproduced on the in-process instrument, which matched the browser sidecar's 4.990955 m exactly.</p></div>
+</article>
+<article class="piece s-passed" id="p06">
+  <header>
+    <span class="num">06</span>
+    <h3>Renderer + camera rig</h3>
+    <span class="round">r4</span>
+    <span class="status">passed</span>
+  </header>
+  <div class="gap"><p>PASSED r4. Critic confirmed travel and arrival on its OWN instrument (223.1px measured, extrapolating to ~249px/23% at the finish pin; all four cars physically at the gate beam at t=66). Claim '0.24 is the physical max' overstated - true max 0.2834 - but claiming the rest drives gate finials to 0.9962 of frame, so it is a composition trade, not a defect.</p></div>
+</article>
+<article class="piece s-round" id="p07">
+  <header>
+    <span class="num">07</span>
+    <h3>Carnival booth + midway world</h3>
+    <span class="round">r6</span>
+    <span class="status">round</span>
+  </header>
+  <div class="gap"><p>ANOTHER ROUND. R5's PREMISE WAS MEASURABLY WRONG, AND WRONG IN THE DIRECTION THAT FLATTERED THE BUILD. THE FOLD CONTRAST IS 5-6x THE BAR'S AND THE PANEL IS 3x TOO BRIGHT.</p>
+<pre>R5 diagnosed booth-02 as reading by fold FREQUENCY and built frequency. Measured with THE SAME INSTRUMENT on our plate and on BOTH bar frames, at matched smoothing +/-2 px:
+                                  booth-02 (bar)     booth-01 (bar)     OURS
+    median fold pitch             86 px = 2.69% W    46 px = 2.40% W    21 px = 1.09% W
+    median ridge-&gt;valley swing    2.4 lum            1.7-2.1 lum        15.2 lum
+    whole-fabric luminance range  8-21               8-13               11-37
+R5's stated premise - &quot;booth-02 repeats about every 2% of frame width, SO WE ARE AT OR FINER THAN THE BAR&quot; - IS WRONG. The bar is 2.4-4.1%. WE ARE 2.5x FINER, and finer was treated as the safe direction when it is THE DEFECT DIRECTION.</pre>
+<p>THE RUBRIC LINE R5 QUOTES RESOLVES IT. rubric.json's booth lens asks for &quot;broad soft fold highlights AND genuinely near-black fold cores&quot;. R5 SHIPPED THE SECOND HALF AND THE INVERSE OF THE FIRST. And the two halves are the same fact in the bar: booth-02's near-black IS THE WHOLE PANEL (8-21 lum), reached by a soft 2.4-lum modulation. Ours puts the near-black in a 3-4 px HARD GROOVE (valleys 11-13) under crowns at 37, on a panel that is BRIGHTER OVERALL THAN THE BAR'S. WE HAVE IT EXACTLY INVERTED: the bar is a DARK panel with SOFT folds; ours is a BRIGHT panel with HARD folds.</p>
+<p>THE EXPOSURE OBJECTION DOES NOT SURVIVE: booth-01 is a warmly-keyed stage with a bright wooden floor, comparable overall key to ours, and its fabric still sits at 8-13 lum with a 1.7-lum fold swing.</p>
+<p>CONSEQUENCE AT 1x RACE SCALE, from the critic's own plate: each leg reads as a bundle of glossy red tubes with black grooves - mechanically uniform width, uniform pitch, hard-edged valleys. ROUND 3 WAS &quot;PAINTED PILLARS&quot;; ROUND 5 HAS TRADED THAT FOR &quot;CORRUGATION&quot;. A same-frame-fraction three-panel comparison (ours | booth-02 | booth-01) makes it unmissable: the bar panels are ONE BROAD SOFT GRADIENT FIELD WITH A VISIBLE NAP, ours is a rank of separated cylinders.</p>
+<p>THE FIX IS A DIRECTION, NOT A KNOB: take the whole fabric's value DOWN into the 8-21 band and take the fold modulation down WITH it - swing toward about 3 lum, FOLDS_INBOARD 4 -&gt; 2, FOLD_RADIUS_FRAC toward 0.5 so ridges nearly meet and the black line between them disappears. THAT IS NOT the &quot;one fatter, more tapered column&quot; the r4 critic warned against - it is FEWER, BROADER, MUCH SOFTER folds on a DARKER panel, which is what both bar frames actually do.</p>
+<pre>RANKED 2 - THE valance EXCLUSION IS INERT EVERYWHERE EXCEPT THE ONE PLACE IT ISN'T, AND THERE IT PAPERS OVER A DESIGN.md CONTRADICTION. Gap to lane 3 at 1920x1080, floor 25:
+                shipped        valance IN   garland IN
+    climb 0     70 (midway)    70           70
+    climb 0.4   81 (drapeR)    81           81
+    climb 1     88 (drapeR)    0 (row 21)   0 (row 58)
+So the exclusion changes NOTHING until the finish. At the finish: the valance's lowest painted row is 25 (0.9769 of frame height); LANE 3's KART TOPS OUT AT ROW 21 (0.9806) AND THE VALANCE OCCLUDES 42 OF ITS PIXELS. DESIGN.md says &quot;the valance may never reach down to meet it.&quot; IT DOES. R5's exclusion note justifies itself with &quot;every car climbs THROUGH the garland&quot; - which is the SETTLED GARLAND case, silently extended to the valance, where the design forbids it.</pre>
+<p>AND THE PIN THAT SHOULD CATCH IT CANNOT: climb.test.ts:82 evaluates carFrac(CLIMB.finishY + CAR_HELMET_TOP) AT x = 0. Off-axis lanes project HIGHER - car0 tops at 0.9583, car3 at 0.9806 on the same world y. THE PIN HOLDS WHILE THE PROPERTY IT STANDS FOR IS FALSE. (sky is genuinely not a quantity: gap 0 at every climb, by construction.)</p>
+<p>THE SWAY CLASS IS EXTENDED AND CLOSED. installWorld returns an update() NO VITEST PIN CALLS, so the ferris wheel, the carousel and the lamp pivots are all posed at construction. Driving update(clockS) over 41 samples across a full 66 s race and re-measuring every raster pin: NOTHING MOVED. Lane-3 gap 77/79/81/83/86/88 identical at rest and at minimum; near-field 70 identical; composite-edge travel identical at four shapes x 31 clock samples with 0 monotonicity breaks and 0 non-lit rows. The wheel is at world x -24 and the carousel at +26 - neither ever becomes the binding neighbour. The lamps sway +/-0.014 rad but are never the nearest object except at climb 0, where the midway pole run is nearer. ROUND 4's 44 px CLASS DOES NOT RECUR ELSEWHERE IN THIS SCENE.</p>
+<p>VERIFIED SOUND, DO NOT RE-SPEND: RIDGE-COUNT INVARIANCE IS STRUCTURAL, NOT EMPIRICAL - screen-x offset at a fixed depth is H*dX/(2*Z*tan(fovY/2)), so ASPECT CANCELS, and both the post and drape anchors ride the frame corner at their own plane. Measured, the drape's inner painted edge sits at 0.1222 / 0.1221 / 0.1208 / 0.1231 of frame height at 1920x1080 / 1920x950 / 1280x720 / 3840x1080 - invariant across aspect 1.78 to 3.56 to 0.7%. Ridge count re-checked at THIRTEEN independently chosen window shapes (heights 450 to 1440, including a letterboxed 1728x1117): the identical eighteen numbers at twelve, 3840x1080 differing only in the last entry, and it survives down to 800x450 where the strip is about 34 px. The critic also counted ridge/valley RUNS, which mesh-identity counting cannot see, and they match the mesh count everywhere except one row at 32:9. POST_INNER_REACH IS CONSTRUCTIVE, NOT FITTED: proscenium.ts:599 places the post at POST_INNER_REACH - COLLAR_HALF_OVERHANG, so moving the constant moves post, collar and pitch together; residual from the 4.48/4.50 depth mismatch is 0.33 px at 1080. (The doc calls it &quot;a fraction of frame height&quot;; it is a world offset that PROJECTS to one - correct the wording.)</p>
+<p>A COVERAGE GAP, NO DEFECT: THE LEFT LEG IS NOT MEASURED BY ANY SHIPPED RASTER PIN - every pin runs on drapeR. The critic ran all of them mirrored on drapeL at five shapes: identical travel, 0 breaks, 0 non-lit rows, identical counts. Nothing is wrong; the coverage is one-sided.</p>
+<p>A CORRECTION TO A NOTE THIS BOARD RECORDED AS SETTLED: the garland ruling was written here as &quot;car 0 is the player and loses ZERO pixels&quot;. At climbTo(1) the critic measures the garland occluding 400 px of car0 and 960 of car3. THE RULING IS NOT REOPENED - it may rest on the real finish pose rather than the climb pin - BUT THE ZERO MUST NOT BE RE-CITED.</p>
+<p>Gates run and read by the critic at the tip: tsc 0, eslint 0, vitest 95 files / 1891 tests. Perf on its own port: MET, discrete RTX 5080, gpu p95 4.57 of 12, p50 1.10, presented p99 16.80, 0 long frames, 0 long tasks, boot 480 ms, 60.0 fps.</p>
+<p>COORDINATOR NOTE - A GUARD THAT DETECTS A SHAPE RATHER THAN A PROPERTY: perf.mjs wrote progress/state.json's perf row from the critic's run. The single-writer refusal at tools/progress.mjs:273 is a PATH REGEX for /\.claude\/worktrees\//, so a critic working from a TEMP copy does not match it and the write is allowed. That is the SAME defect shape as climb.test.ts:82 above - the check holds while the property it stands for (&quot;am I the coordinator?&quot;) is false. Routed, not fixed here.</p></div>
+</article>
+<article class="piece s-round" id="p08">
+  <header>
+    <span class="num">08</span>
+    <h3>Racer karts + characters</h3>
+    <span class="round">r7</span>
+    <span class="status">round</span>
+  </header>
+  <div class="gap"><p>ANOTHER ROUND. THE BIGGEST GAP IS THAT THE &quot;+ CHARACTERS&quot; HALF OF THIS PIECE IS NOT ON SCREEN: THE DRIVERS ARE HELMET BALLS.</p>
+<pre>Measured on the dressed 1920x1080 scene through the rig camera, software raster, depth-resolved, 6 climb samples, rider pixels as a share of each car's OWN presented pixels:
+    car 0 racer  rider 10.5%  head 1237 px  torso+thighs+arms+gloves 422 px = 2.7%
+    car 1 truck  rider  7.9%  head 1217 px  torso+thighs+arms+gloves 333 px = 1.7%
+    car 2 bullet rider 10.1%  head 1269 px  torso+thighs+arms+gloves 485 px = 2.8%
+    car 3 buggy  rider 11.9%  head 1323 px  torso+thighs+arms+gloves 671 px = 4.0%
+HEAD IS 74-79% OF THE CHARACTER ON EVERY CAR. The torso, both arms and both gloves together are 1.7-4.0% of the vehicle - on car 1 that is under 400 px spread over seven meshes, about 40 px each.</pre>
+<p>Against the bar that is a 3-5x miss. In kart-01 and kart-02 the character's head plus torso plus arms is the LARGEST SINGLE MASS of the kart - Mario's body with both gloves on the wheel is roughly 30-45% of his kart's silhouette, and Wario in kart-04 is more than half of his quad. NOT ONE BAR KART SHOWS A HELMET WITH NO BODY UNDER IT. (The bar percentages are eye-measured off press frames at about +/-15%, stated as such.)</p>
+<p>THIS IS THE CUE THAT PICKED US OUT OF THE BLIND PILE, and the critic named it BEFORE revealing: blind-pairs --lens kart, n=4, ours ranked 1 of 5, PICKED_OUT against a 20% chance. Honest caveat it stated itself: that pile separates on composition and band-limiting before it separates on art - the tool warns ours is downscaled 1.50x against the bar frames' 3.00x or more - so rank 1 alone is not informative. THE CUE IS, and it reproduces in the pixel counts.</p>
+<p>THE CONSEQUENCE IS WORSE THAN A LOOK: src/entities/rider/index.ts ships a lean/squash rig, arm pivots, a mouth and blush. If the body is 300 px then the pose rig animates nothing a player can see, and DESIGN.md's &quot;expression carries the race state&quot; is being carried by a 35 px white ball.</p>
+<p>FIX DIRECTION, and it is the same root as the tractor read: THE KARTS ARE TOO BIG FOR THEIR DRIVERS, not the drivers too small for the frame. Shrink the bodywork around the rider and seat him so torso and arms clear it.</p>
+<p>CAR 3 STILL READS AS A TRACTOR, for a different reason than r5's. The critic cut its own plate and looked at 1x race scale (about 135 px/car), 4x and 8x. R6 is right that the cab is gone and the wheels are equal. What still says tractor: FOUR FULLY-ARCHED MUDGUARDS ARE THE SINGLE LARGEST IDEA ON THE CAR AT 25.1% OF ITS PRESENTED PIXELS - more than the rider at 11.9%, more than the roundel, second only to the tyres at 31.9% - and the arch top stands 0.224 m above the tyre crown on a 0.200 m radius wheel, i.e. bodywork arcing a FULL WHEEL RADIUS over the tyre on all four corners. Car 1 is 11.2% and 0.195 m proud of a 0.280 m radius; car 2 has none. The green body is a squat box with the number plate on its flank and a pale cap on top ending at the driver's chin, driver tucked behind it - which is car 1's arrangement one notch shorter. At 1x the fleet reads as boxy-with-fenders (blue), open-wheel racer (red), bullet (gold), boxy-with-fenders-smaller (green): THE TWO BOXY ONES ARE ONE FAMILY.</p>
+<p>THE CRITIC IS EXPLICIT THAT THIS LAST PART IS JUDGEMENT, NOT MEASUREMENT, and that the repo's two instruments disagree with its eye: the depth-resolved raster ranks 1v3 THIRD of six at 0.3109 (N=48) and calls 0v3 the fleet minimum at 0.2783. It normalises each car into its own bounding box, which discards size and the bodywork-over-wheel cue a human uses. Neither instrument's minimum pair is the pair the critic picked out. Weigh that.</p>
+<pre>THE SHOULDER RULE IS BROKEN, AND MAKING THE CAB TALLER MAKES IT LEGAL. Sweeping r4's cowl upward, which r6 never did:
+    capTop 0.919  cowl h 0.374 / l 0.620  panel, refused
+    capTop 1.075  cowl h 0.520 / l 0.620  panel, refused   (r4's own)
+    capTop 1.200  cowl h 0.637 / l 0.620  POST - ADMITTED
+    capTop 1.600  cowl h 1.013 / l 0.620  POST - ADMITTED
+The prose says nothing above the driver's shoulders may be a panel, only a post; the arithmetic says scaling the cowl 1.22x on the one axis the rule measures makes it pass. R6 wrote this off as &quot;a tower, nobody has built one&quot; - it is not a tower, it is the same cowl. Nothing is broken TODAY because only the thin cream lid still reds, but the RULE is. Same classifier bug in the other direction: it calls car 0's bullseyeHoop (h 0.464 / l 0.464, a circular ring, THE PLAYER'S IDENTITY SILHOUETTE) a PANEL, and it inflates car 1's panel count with four circular roundel meshes.</pre>
+<p>TOPOLOGY CLAUSE (b) ADMITS A HULA HOOP. A cream open TorusGeometry(0.90, 0.05, arc 2.7) sharing the front arch's centre and axis EXACTLY returns topology refusals [] and paints 1864 px in the dressed scene - a cream ring 1.8 m across, WIDER THAN THE WHOLE CAR (aabb z 1.14), hanging off the wheel hub. The lane's own disclaimer named radius 2.0 as the uncaught case; 0.9 already gets through. Its three named backstops (MESH_SELF_FLOOR, layer share, presented) are ALL FLOORS, which a too-big mesh clears BY BEING BIG. Not checked: whether the drape-abutment pin reds on it - that would be lane 3's accident rather than the rule.</p>
+<p>VERIFIED SOUND, DO NOT RE-SPEND: gates re-run by the critic (vitest 84/1618 on that commit, tsc 0, lint 0, perf MET at gpu p95 4.39 / p50 1.28, presented p99 16.80, 0 long frames, 0 long tasks, boot 478 ms, build hash confirmed against dist/). FLEET_EVENNESS_FLOOR 0.68 is honestly derived - 0.806 divided by 1.19, no bad state in the arithmetic - and the accompanying test really does assert the floor CANNOT see the 0.919 cowl, so the blindness is asserted rather than hidden. THE SELF-POLICING FIXTURE IS THE STRONGEST THING R6 SHIPPED: five rows regenerated every run and confirmed to reproduce, three marked reproducibleHere false and never asserted for equality, measuredBy required to match /no longer exists/, corrections appended rather than overwritten. The shoulder CONTRAST is real on shipped art, not a test construction - createCarArt(1) carries an unnamed cab mesh (+0.220, h 0.460 / l 0.560) and trim:roof (+0.260, h 0.100 / l 0.520) above its rider's shoulders, and shipped car 3 is panels = 0 with exactly the three named posts. The cowl reproduction matches to three decimals.</p>
+<p>THE ROUTED-OUT WHEELBASE FINDING DOES NOT HOLD - DO NOT SPEND A ROUND ON IT. Measured axle-to-axle over max wheel diameter: car 0 2.13, car 1 1.75, car 2 2.20, car 3 2.45. The board's &quot;every car in this fleet is at 2.2-2.5x&quot; is WRONG, two of four are outside it. And kart-01 measured off the press frame is about 2.26x, a LOWER bound because the 3/4 drift view compresses the along-axis distance and not the tyre diameter. The bar is not &quot;barely longer than a wheel diameter&quot;. The proportion that IS wrong is driver-to-bodywork, above.</p>
+<p>CROSS-LANE, AND ALREADY SENT TO PIECE 07 MID-ROUND: piece 07's number is SAFE and my brief to it was WRONG. Painted column to painted column, 6 climb samples: lane 3 last painted 1709/1709/1709/1710/1711/1711, drape first painted 1711/1712/1712/1713/1714/1714, CLEAR GAP 2-3 px at every sample. R6's &quot;1710-1713&quot; was the BOUNDING BOX (x1 minus 1), not the painted column, and &quot;zero gap at every sample&quot; was an artifact of comparing a bbox edge against a painted edge. A hem flare has 2-3 px to work in, not 0. The abutting column is still trim:blaze, cream, at every sample, so the high-contrast concern stands. And the fleet did NOT move the column: against piece 07's recorded r4 row it is unchanged or 1 px better everywhere.</p></div>
+</article>
+<article class="piece s-passed" id="p09">
+  <header>
+    <span class="num">09</span>
+    <h3>Bullseye target + hit feedback</h3>
+    <span class="round">r3</span>
+    <span class="status">passed</span>
+  </header>
+  <div class="gap"><p>PASSED r3. Critic reproduced the flat-field number (53.4% vs claimed 52.9%) and confirmed all three boundaries survive a squint on OUR face (30.2/46, 40.0/28, 53.1/125 ray-hits). Refuted the builder's defence - the BAR does not collapse under a squint (194 ray-hits) - but the conclusion stands on our own measurement.</p></div>
+</article>
+<article class="piece s-passed" id="p10">
+  <header>
+    <span class="num">10</span>
+    <h3>Water jet VFX + splash</h3>
+    <span class="round">r1</span>
+    <span class="status">passed</span>
+  </header>
+  <div class="gap"><p class="empty">No gap recorded.</p></div>
+</article>
+<article class="piece s-round" id="p11">
+  <header>
+    <span class="num">11</span>
+    <h3>HUD: power, target, accuracy, positions</h3>
+    <span class="round">r2</span>
+    <span class="status">round</span>
+  </header>
+  <div class="gap"><p>Overtake now reads without a digit: rival kart chip crosses the badge, chevrons, crown returns to the player's ladder chip. Also killed a posing defect its own film exposed - ?t=N replays commits in a loop so wall-clock CSS froze mid-flight and every later posed frame showed a stale callout; transients now posed per render off raceTimeS. Nominated: the callout says WHO but not WHERE - the pass happens up on the towers while the chip crosses in the HUD band.</p></div>
+</article>
+<article class="piece s-round" id="p12">
+  <header>
+    <span class="num">12</span>
+    <h3>Race Complete + leaderboard</h3>
+    <span class="round">r7</span>
+    <span class="status">round</span>
+  </header>
+  <div class="gap"><p>ANOTHER ROUND. THE CENTRAL PERF CLAIM DOES NOT REPLICATE, AND THE INSTRUMENT CANNOT SEPARATE THE ARMS.</p>
+<pre>R6 stated &quot;not one shipped interval exceeded even 20 ms&quot; and &quot;the blur, verified applied at blur(9.72px) saturate(1.15), COSTS NOTHING&quot;, and offered that as grounds to reconsider whether the defocus veil earns its place. Rebuilt at 687b446ed, own port, five interleaved runs of tools/stutter.mjs --from 50 in one sitting on an RTX 5080, BOTH OF THE TOOL'S OWN CONTROLS CLEAN IN EVERY RUN:
+    shipped #1                          MISSED   1 long   worst 50.0 ms   racing-&gt;outcome, +50 ms
+    shipped #2                          MET      0        16.8 ms
+    shipped #3                          MISSED   1        33.2 ms         in wall, +3200 ms (mid-stage)
+    blur(9.72px) saturate(1.15) #1      MISSED   2        33.3 ms         in outcome +667; in standings +50
+    blur(9.72px) saturate(1.15) #2      MET      0        16.8 ms
+THE SHIPPED PAGE IS DIRTY 2 RUNS IN 3, with a 50.0 ms interval, against a claim that nothing exceeded 20 ms. THE BLUR ARM IS DIRTY 1 IN 2. THE ARMS OVERLAP COMPLETELY - blur(9.72px) is not measurably different from shipped at these sample sizes. So &quot;the blur costs nothing&quot; is UNMEASURED, NOT ZERO, which is the same standard CRITIC.md applies to a void perf sample.</pre>
+<p>WHY IT CHANGES A DECISION: the brief proposed dropping the veil because the blur now looks free. IT IS NOT FREE - IT IS NOT ANYTHING, YET. DO NOT DROP THE VEIL ON THIS EVIDENCE.</p>
+<p>THE STRUCTURAL CAUSE, AND IT IS WORTH MORE THAN ANOTHER RE-RUN: tools/stutter.mjs cuts a 60-INTERVAL CONTROL out of a 2270-INTERVAL recording. An event occurring about 1 in 2270 intervals is ABSENT FROM A 60-INTERVAL CONTROL ABOUT 97% OF THE TIME, so &quot;both controls stayed clean&quot; is NEARLY UNINFORMATIVE about a single long frame - which is the entire effect size every arm in this round turns on. THE TOOL PROMOTES MACHINE NOISE TO MISSED. That is why r6's n=1 arms all read 0 and the critic's do not: AT n=1 IT IS A COIN, NOT A MEASUREMENT. The fix is REPLICATION PER ARM WITH THE COUNT DISTRIBUTION REPORTED, or a control cut PROPORTIONAL to the recording - not another single-run table.</p>
+<p>THIS REACHES PAST PIECE 12. Every perf verdict in this project that rests on a single stutter.mjs run rests on the same instrument, including piece 16's. Fixing the tool is the round's primary work.</p>
+<pre>THE 0.55 BURST: KEEP IT, AND THE QUESTION CONTAINED A FALSE PREMISE. Measured off the raster, both arms, same prize art at 388.8 x 388.8 px:
+    glory 1.0   burst box 1123.2 px, y = -53.5 (off the top of 1080)   2.89x the prize   opacity 1
+    glory 0.55  burst box  617.8 px                                    1.59x the prize   opacity 0.55
+THE 0.55 BURST IS NOT THE 4th-PLACE PLAYER'S REWARD. It fires on a screen reading &quot;TICK-TOCK WINS LI'L RACER / Li'l Racer goes home with Tick-Tock&quot; - IT IS AN AI'S PRIZE MOMENT. AWARD_GLORY's own docstring asks for &quot;same language, plainly less of it, legible as someone else's&quot;, and on the plate that is exactly what it does: at 1.0 the rays are the whole screen, at 0.55 a warm halo hugging the prize. ONE REAL MINOR READ PROBLEM, not a gate: at 1.59x the burst is SMALLER THAN THE VEILED BLUE BULLSEYE DISC sitting directly behind the prize, so the reward glow is out-competed by scenery. At 1.0 the 2.89x burst dominates and this never happens.</pre>
+<p>PRIORITY 1 ANSWERED AND THE CLASS IS CLEAN: translateX(...em) exists NOWHERE ELSE as a defect. Live-cascade audit - the only instrument that could have caught the original - across all four endgame stages, win and lose arms. Every element carrying a JS-written em length computes to font-size 10.800 px, ratio 1.0000 against the overlay root: .eg-row (translateX(26em) -&gt; 280.8 = 26 x 10.8), .eg-jet-beam, .eg-jet-splash, .eg-jet-nozzle, .eg-claim. The ONE element at a non-root em is the banner glyph span at ratio 9.5000 (translateY(-0.22em) -&gt; -22.572 px), AND THERE GLYPH-RELATIVE em IS CORRECT BY INTENT: a 0.13 em arch apex on a 102.6 px letter is 13.3 px of visible marquee curve, where root-em would be 1.4 px and invisible.</p>
+<p>VERIFIED SOUND, DO NOT RE-SPEND: the caption fix is real - .eg-prize-name computes to 31.32 px = 2.900 x root em, so the 63 rules genuinely apply now, and its transform is translateX(-14.575px) scaleX(0.9988), px, matching plaqueTrackPx. plaqueTrackPx INVARIANCE IS STRUCTURAL so an eighth shape cannot break it: root.style.fontSize = vp.height/100 and plaqueTrackPx(x01, vp.height) read the same vp in the same sync() call, so the offset in root-em is always x01 x 58 at any window shape, letterboxed or not. THE VEIL IS REAL AND EARNS ITS PLACE, measured not inferred: standings buf 320x180 / css 1920x1080 = tent exactly 6.0 CSS px, payoff the same, so veil01()'s &quot;1 for every stage but outcome&quot; holds through the climax; GPU p50 0.041 / 0.038 ms veiled against 0.329-0.352 ms racing at full res, ABOUT 8x CHEAPER. The r5 failure mode is now guarded twice: scrim.test.ts counts brace balance with its own must-fail arm, and payoff-burst.test.ts catches any rule nested at depth, balanced or not. Gates run and read by the critic: tsc 0, eslint silent, vitest 95 files / 1891 tests.</p>
+<p>INFERRED RATHER THAN MEASURED, and the critic says so: the dpr-2 tent. The render-gate ten-minute browser lifetime ceiling killed that arm before it ran. min(base, DEFOCUS_RATIO) is absolute so 320x180 at dpr 2 follows structurally and defocus.test.ts pins it, but IT DID NOT SEE IT.</p>
+<p>NOT DONE, stated rather than claimed: the blur(60px) negative control (launch budget); harness:must-fail and the redverify suites; and NO BLIND COMPARISON - this round's questions were unit and instrument questions, so blind-pairs.mjs had nothing to adjudicate and the critic makes no blind claim.</p></div>
+</article>
+<article class="piece s-round" id="p13">
+  <header>
+    <span class="num">13</span>
+    <h3>Prize wall picker</h3>
+    <span class="round">r1</span>
+    <span class="status">round</span>
+  </header>
+  <div class="gap"><p>Wall is a stocked machine: 3 plushies per shelf, every copy its OWN svg injection site (15 mounted, pinned), LED uprights, cursor + dimmed rows, AI winners proven end-to-end. Nominated: the right third of every shelf is empty striped backboard - stock and tag hug the left, so the wall reads half merchandise half vacancy.</p></div>
+</article>
+<article class="piece s-round" id="p14">
+  <header>
+    <span class="num">14</span>
+    <h3>Audio: midway music, water, dings, crowd</h3>
+    <span class="round">r6</span>
+    <span class="status">round</span>
+  </header>
+  <div class="gap"><p>ANOTHER ROUND. THE BED MODEL WAS VALIDATED AT ONE OF 14,641 REACHABLE BED SETTINGS, AND IT IS 1.8 dB OPTIMISTIC EVERYWHERE MIDWAY IS TURNED DOWN.</p>
+<pre>R5's whole case rests on the quadrature bed model, and it is checked against a render at EXACTLY ONE POINT - all four bed rows at 1 - where it agrees to -1.0%. Seven more reachable beds rendered on the critic's own build:
+    music 1  / cars 1   / crowd 1   / fx 1   measured 243.82  model 241.42  error -0.09 dB
+    music 0.5/ cars 1   / crowd 1   / fx 1   measured  96.47  model  86.86  error -0.91 dB
+    music 0.3/ cars 1   / crowd 1   / fx 1   measured  80.52  model  67.82  error -1.49 dB
+    music 0  / cars 1   / crowd 1   / fx 1   measured  78.18  model  64.51  error -1.67 dB
+    music 0.1/ cars 0.9 / crowd 0.8 / fx 1   measured  54.65  model  44.50  error -1.78 dB
+THE ERROR IS ONE-SIGNED AND IT IS THE OPTIMISTIC ONE: the model UNDER-states the bed, so it OVER-states how far the cue stands clear of it. That is the same direction r5 rejected linear summation for.</pre>
+<p>THE CAUSE IS IN THE GRAPH, NOT IN THE MATHS. src/audio/graph.ts:320-328 builds ONE noise buffer source and taps it for the jet stream, the four car ratchets, the crowd bed, the crowd cheer, the overtake swoosh, the clacks, the miss AND the music percussion. Two bandpasses of the SAME waveform are coherent inside a narrow analysis band, so at 392 Hz cars and crowd do not add in quadrature: solos of 33.05 and 55.37 measure 78.18 together, a correlation coefficient of 0.53 rather than 0. At bed = 1 the calliope (oscillators, genuinely independent) carries 93% of the band amplitude and hides it. TURN MIDWAY DOWN AND THE CORRELATED ROWS ARE ALL THAT IS LEFT - WHICH IS EXACTLY WHAT MASKED_ADVICE TELLS A RIDER TO DO.</p>
+<p>WHAT IT COSTS, RENDERED: master 1 / jet 0.1 / Midway 0.1 / Cars 0.9 / Crowd 0.8 / Effects 1 is reachable and the panel publishes it as CLEAR - no silence warning, no ON-POWER CUE BURIED. Its bed renders at 54.65 and cueBandLevel puts the cue at 16.17. That is -10.58 dB, 1.76 dB BELOW the panel's own -8.82 dB line, WITH NO SUBTRACTION ANYWHERE IN THE READING and using the model's own deliberately generous &quot;at its loudest&quot; cue term. Recovering the cue from the render instead gives -10.80 dB, so the &quot;the recovery is biased low&quot; caveat cannot rescue it. Scale: 495 reachable SOUNDING mixes sit in the region measured to be at least 1.49 dB wrong (music &lt;= 0.3, cars &gt;= 0.8, crowd &gt;= 0.8) while the model calls them clear by less than that error.</p>
+<p>AND IT REPEATS ROUND 4's DEFECT SHAPE. Walking MASKED_ADVICE as a rider from the seed master 0.2 / jet 0.1 - &quot;turn Midway and Crowd down&quot; - and pressing minus alternately, THE FIRST STATE isMaskedCue CALLS CLEAR IS MIDWAY 0.3 / CROWD 0.4, and the rider stops there because the warning went away. Rendered: bed 43.61, cue recovered 14.06, so -9.83 dB, still 1.01 dB under the line. (This one leans on the subtraction - its no-subtraction reading is -8.62 dB - so it corroborates rather than carries.)</p>
+<p>THE FIX DIRECTION, AND IT HAS NO FREE PARAMETER EITHER: the bed solos are already rendered every run. Add the six pairwise renders, derive rho, and make the bed a MEASURED CORRELATION form bed^2 = sum-sum rho_ij v_i v_j. That generalises the -1.0% agreement off its single point. At minimum, sweep B already renders music@0 in the monotonicity ladder and only asks whether it is MONOTONE; ask it whether bedBandLevel PREDICTS it and the tool reds today.</p>
+<p>WHERE &quot;NO FREE PARAMETER&quot; ACTUALLY LEAKS: CUE_MASK_RATIO itself is a defensible construction and the critic is NOT asking for it to move. But &quot;nothing is knife-edged because the line sits in a 7 dB gap&quot; IS FALSE as a statement about the reachable grid - it is true only along the jet ladder with the bed pinned at 1. Over the 146,400 reachable mixes with a live cue and a live bed, 2,547 SIT WITHIN 1 dB OF THE LINE AND 51 WITHIN 0.05 dB. Combined with a one-signed 1.8 dB model error, &quot;not knife-edged&quot; is doing work it cannot do.</p>
+<p>THE INSTRUMENT IS LANDED: tools/audio-bed-model.mjs, cherry-picked onto the tip as af4f9ce80, 213 lines, lint and tsc clean, exits 1 on any mix the panel calls clear that measures under the line. It ships the case it must fail.</p>
+<p>VERIFIED SOUND, DO NOT RE-SPEND: gates re-run in an isolated checkout at 08f7bbe77 - tsc 0, eslint 0, vitest 87 files / 1656 tests, exactly the floor. npm run audio:cue reproduced END TO END on the critic's own build, exit 0: sweep A 121 arms / 99 sounding / 22 warned; sweep B ladder identical to the lane's figures including +16.31; constants re-derived within tolerance; store snapping confirmed on all six off-grid values; witness decode agreed at peak 41.</p>
+<p>MASTER-INVARIANCE IS NOW CLOSED AS A PROPERTY OF THE SHIPPED GRAPH RATHER THAN OF TWO RENDERS: graph.ts:283-288 is sumBus -&gt; compressor -&gt; masterGain -&gt; userGain -&gt; pauseGain -&gt; muteGain -&gt; destination, and master maps to userGain at graph.ts:302, so every gain the slider touches is post-sum AND post-compressor and cannot change compression. Confirmed empirically three ways, including an independent arm at master 0.2 reading -9.82 dB against its master-1 twin's -9.83 dB.</p>
+<p>THE LINEARITY REVERSAL IS CORRECT AND R5 WAS RIGHT TO PUBLISH IT: compressor.connect(this.masterGain) at graph.ts:284, so the old test's ACCURACY_BUS_PEAK times masterGain was the SPEAKER-SIDE number. Measured: jet alone at level 1 is -12.07 dBFS, 3.9 dB OVER the -16 dB threshold; shipped bed -1.79 dBFS, 14.2 dB over. A false invariant was replaced by a true one. (-12.07 is back-computed from the destination peak divided by masterGain, i.e. the compressor's OUTPUT reflected back, so the true input is at least that - conservative in the safe direction.)</p>
+<p>&quot;EXACTLY THE 19&quot; IS ARITHMETICALLY EXACT at the shipped bed: cueGain &gt;= 1/32768 needs m^2 j^2 &gt;= 2.4493e-4, giving master 0.2-1.0 at jet 0.1 (nine) and master 0.1-1.0 at jet 0.2 (ten). Nothing else.</p>
+<p>TWO SMALLER THINGS, INFERRED FROM READING RATHER THAN MEASURED: the prefix fingerprint's BED half is a 15-prefix hand list, so a new bed SOURCE with a new prefix on an existing bus - a barker shout on effectsBus, say - joins no fingerprint and reds nothing while moving BED_BAND_LOCK.effects; the fourth test only catches a new CHANNEL. And lockTau is pinned by NEITHER fingerprint: it is a jet constant (graph.ts:551/553/558/568, on jet gains) but does not start with &quot;jet&quot;, and the bed list has no &quot;lock&quot; prefix - so the test's own comment claiming lockTau is in the jet list by prefix is FALSE AS WRITTEN.</p>
+<p>NOT RUN BY THE CRITIC, so unverified: audio:cue:redverify and harness:must-fail.</p></div>
+</article>
+<article class="piece s-round" id="p15">
+  <header>
+    <span class="num">15</span>
+    <h3>Juice pass: camera, shake, transitions</h3>
+    <span class="round">r1</span>
+    <span class="status">round</span>
+  </header>
+  <div class="gap"><p>THE LANE DIED MID-BUILD. WHAT LANDED IS COHERENT AND WIRED; THREE EXPORTS ARE DEAD AND ONE OF THEM IS HALF THE PIECE'S NAME. Coordinator audit at 8e59a8691, not a critic round - this piece has never been reviewed.</p>
+<p>WHAT IS REAL AND WORKING, so do not rebuild it: src/juice/ ships vocab (easings, springs, impulse, shake, hit-stop, reduced-motion), moments.ts (a MomentTracker with ?t= recall), accents.ts, burst.ts, countdown.ts and an index.ts that composes them. createJuice IS wired - main.ts:43 imports it, :203 constructs it, :343 calls juice.update(race, frameDtS) once a frame. The composition is sound: moments feed accents and finish bursts, the countdown layer poses off state, the presentation clock switches from sim clock to wall-advanced at results so a last finisher's burst still completes, and reduced-motion is threaded through as an injectable rather than read at module scope. Five test files exist (accents, burst, countdown, moments, vocab).</p>
+<pre>THE DEAD EXPORTS, counted repo-wide across src/ outside vocab.ts itself:
+    easeOutCubic      3 consumers
+    easeInCubic      11
+    easeOutBack       5
+    impulse           3
+    springAt          4
+    Spring            3
+    easeInOutCubic    0
+    hitStop           0
+    makeShake1D       0
+    makeShake2D       0
+makeShake1D/2D ARE EXERCISED ONLY BY THEIR OWN UNIT TEST. NOTHING IN THE GAME RATTLES. This piece is named &quot;camera, shake, transitions&quot; and the shake vocabulary is a tested, seeded, correctly-normalised generator that no object consumes. hitStop is in the same state and index.ts's own header advertises both as part of what the module provides.</pre>
+<p>NOTE THE PIECE NAME CONTAINS A CONTRADICTION THE CODE ALREADY RESOLVED, AND THE CODE IS RIGHT: vocab.ts:205 says &quot;Shake - for OBJECTS. Never the camera&quot;, because screen shake IS camera motion and the settled camera constraint forbids it. So &quot;camera shake&quot; is not the work. The work is deciding which OBJECTS earn a rattle and whether hit-stop earns a beat at all - and if the honest answer for either is &quot;none&quot;, that is a finding to argue, not a silence to leave. A generator with no caller is either a missing consumer or a deletion.</p>
+<p>THE THIRD WORD IN THE NAME IS UNAUDITED: &quot;transitions&quot;. moments.ts reads phase transitions (countdown -&gt; racing -&gt; results) and countdown.ts poses off them, but nobody has asked whether the phase CHANGES themselves are presented - whether the cut into racing and the cut into results read as authored beats or as the state flipping. That question has never been put to this piece.</p>
+<p>NOTHING HERE IS CRITIC-VERIFIED. There is no round-1 verdict, no blind comparison against the bar, no raster evidence, and no perf reading attributable to this piece. Treat every claim in this row as a coordinator reading of the source, not as a measurement.</p></div>
+</article>
+<article class="piece s-round" id="p16">
+  <header>
+    <span class="num">16</span>
+    <h3>Performance: 60fps, GPU budget, no stutter</h3>
+    <span class="round">r5</span>
+    <span class="status">round</span>
+  </header>
+  <div class="gap"><p>ANOTHER ROUND. BOTH LOAD-BEARING CONSTRUCTS ARE PINNED ONLY AT dpr 1, AND A dpr-BLIND REGRESSION SHIPS GREEN.</p>
+<pre>R4 declares two things load-bearing and keeps them, correctly: align()'s `applied` subtraction (src/endgame/wall-art.ts:581-582) and snapToDevicePx on the intro travel (src/endgame/dom.ts:948). NEITHER IS GUARDED ANYWHERE EXCEPT AT devicePixelRatio === 1. Three mutations in a private copy of efb223485, npx vitest run test/endgame/:
+    baseline (shipped)                                                        133 passed
+    M1  drop the subtraction entirely (hostRect.left for hostRect.left - applied.x)    3 FAILED - exactly the three the commit names
+    M2  hostRect.left - applied.x * ratio   (wrong at every dpr except 1)      133 passed - GREEN
+    M3  snapToDevicePx returns ratio === 1 ? Math.round(cssPx) : cssPx         133 passed - GREEN
+M2 and M3 are real defects and the suite cannot see either. M3 IS THE WORSE ONE: it disables the construct r4 says is what stops all fifteen copies being resampled on every frame of the slide-in, and it does so on the ratio most real machines run.</pre>
+<p>WHY THE HOLE EXISTS: wall-host-nudge.test.ts:220 is the only dpr-2 arm and it is a FIRST sync, where `applied` is {0,0} and the subtraction is a no-op. The RESIZES loop - the only place `applied` is ever non-zero - runs at dpr 1 only. wall-art-dom.test.ts drives align() at REAL_BOXES.dpr, which is 1. So fractional dpr is covered by NOBODY: the pixel guard claims nothing at 1.25 and the source guard claims nothing at 1.25.</p>
+<p>THE FIX IS EIGHT TESTS AND THE CRITIC MEASURED THEM CATCHING BOTH MUTATIONS. Wrap the two loops wall-host-nudge.test.ts already has in describe.each([1.25, 1.5, 2, 3]) - rig() takes dpr already - asserting onGrid(rect.left, dpr) and onGrid(rect.top, dpr) after each of the three RESIZES, and onGrid(top, dpr) at all 61 frames of the intro travel. MEASURED: 8/8 pass on shipped source; M2 reds 4 (&quot;left after resize to 1040&quot;); M3 reds 4 (&quot;intro01 = 0.0166...&quot;). This also converts the commit's hand-computed 1.25 claim - &quot;-518.4 CSS px is -648 device px exactly&quot; - from prose into an assertion.</p>
+<pre>THE 0.277% RESIDUAL IS ISOLATED, AND IT IS THE INSTRUMENT RATHER THAN THE WALL. Three runs on the critic's own build:
+    as shipped                                    copy 9 movedPct 0.277%  (25/9025) worst 84  changed-pixel bbox (56,15)-(84,47), a 29x33 interior island  noisePct 0.000
+    --ablate margin-left/top .5px (layout only)   copy 9 0.2881% (26/9025) worst 84  the SAME island shifted (-1,-1) WITH THE ART           noisePct 0.2880886426592798, the same 26/9025
+    shipped + a no-op image-rendering:auto sheet plated before the pixelated one   copy 9 0.0000%  worst 0  no changed pixels  noisePct 0.000
+THREE CONCLUSIONS, ALL MEASURED: it is NOT filtering - in the margin run the same-plate-twice arm found the identical 26 pixels, and on the third run copy 9 is 0.000%, so the shipped wall really is 15/15 bit-identical on a run of the same source. THE TELL WAS ALREADY IN THE COMMITTED FIXTURES AND NOBODY READ IT: no-snap-dpr1.json has noisePct 0.2770083102493075 and its only non-zero copy is copy 9 at 0.277 - both 25/9025; snapped-dpr1.json has noisePct 0.2880886426592798, which is 26/9025 exactly. AND noisePct UNDER-REPORTS ITS OWN FLOOR BY CONSTRUCTION: it plates the page twice with no invalidation, so on a cached compositor tile it is trivially 0, while `pixelated` forces a re-raster and so does any addStyleTag. The honest noise arm is a NO-OP STYLESHEET plated the same way; it costs one extra plate pass and it collapsed the residual to zero.</pre>
+<p>A DEFECT IN A SHIPPED TEST FOLLOWS FROM THAT: wall-blit.test.ts:164-165 pins expect(maxMoved(rec)).toBeCloseTo(0.277, 3) and the same for no-snap-dpr1. THAT FREEZES AN INSTRUMENT ARTEFACT AS AN INVARIANT - re-cut shipped-dpr1.json on a clean run and those two lines GO RED FOR A WALL THAT IS MORE PERFECT THAN THE RECORDED ONE. R4's own sentence (&quot;it tracks where that copy's clip lands, not whether the bitmap is filtered&quot;) is close but wrong in the way that matters: the bbox moves WITH THE ARTWORK under a layout shift, not with the clip.</p>
+<p>ALSO: THE RECORDING NO LONGER CARRIES PER-COPY GEOMETRY, which is exactly the field needed to isolate this. tools/wall-blit.mjs:307-310 computes each copy's rect and then keeps only `front`. The retired tool recorded left/top/width/height/bitmapPx. Restoring three fields would have let r4 answer its own open question without a browser.</p>
+<p>THE 22-TEST RETIREMENT IS AUDITED AND SOUND. The critic read the deleted file at efb223485^ in full and traced all 22: it could NOT find an assertion about something real that is now pinned nowhere. A wrong invariant replaced, not coverage lost, and the replacement is STRONGER on the arms it kept - the &quot;different builds&quot; arm now also pins that the two round-3 arms share a fingerprint, and the mid-slide arms gained an upper bound on the travel plus a pin that t.y differs from the resting y. &quot;The ten back copies drawn at a size their bitmap is not&quot; is PRESERVED as fixture integrity at wall-art-dom.test.ts:280-282, still asserting length 10 and toBeCloseTo(0.031, 2); only the claim that 0.031 px is a DEFECT is withdrawn. The three left edges survive as deviceGridNudge inputs. &quot;1/64 px out is still a blit&quot; was PROMOTED from a tolerance case to the finding itself, as the layout-only control arm asserted across all seven arms. TWO SMALL LOSSES, BOTH NAMED: the deleted 108.02-over-108 case (0.02 px) is caught by nothing now - a deliberate retraction argued on evidence, since the same build read MISSED at 1.25 and MET at 1.5 on that axis - and wall-blit's EXIT mapping (MET 0 / MISSED 1 / UNMEASURED 2) is now pinned by no test. Clean-up verified: no dangling wall-grid / judgeWallGrid / offGridBy / GRID_TOL reference survives except the kept fixture's own provenance field, and that fixture is not an orphan - wall-art-dom.test.ts:56 reads it.</p>
+<p>VERIFIED SOUND, DO NOT RE-SPEND: M1's must-fail is exactly as claimed, reding exactly 3 by the names the commit gives and nothing else. wallblit:selftest can fail - the ablation exits 1 with its three named failures. The four control arms separate on a THIRD independent bundle: blit 0.000%, layout-only 0.000% at a fractional rect 143.5, resample 11.82%, snapped 12.64% at a dead-integer rect 382. The wall is a blit, 15/15 MET on the critic's own build on all three runs. Copy 10's 0.133% is noise exactly as the file says - it did not reproduce on any of three runs. dom.ts's wallOffset is the ONLY write to wall.style.transform and it is stored post-toFixed(4), so align() subtracts the number the page really carries; no stale-offset path. THE STUTTER WINDOW IS ARITHMETIC, NOT A FIT: OUTCOME_DELAY_S = 0.6 (constants.ts:19), POP_S = 0.35 (flow.ts:55), flow.ts:305-307 fires burstCount++ at OUTCOME_DELAY_S and flow.ts:441 ramps pop01 over POP_S from the same instant. Localisation sound; still PIECE 12's, not 16's.</p>
+<p>INFERRED RATHER THAN MEASURED, and the critic says so: that Windows 125% scaling is common enough to make dpr 1.25 the majority case; and the physical cause of the non-deterministic raster in that 29x33 island of the duck bitmap - it established THAT it is re-raster non-determinism, not WHY Chromium produces it.</p>
+<p>NOT RUN BY THE CRITIC, stated rather than claimed: the full vitest run (it excluded the five browser-dependent files to stay off the launch ledger after the permit gate held its first run at 20 launches in the last 60s, and got 83 files / 1479 tests green on the rest, consistent with the floor); harness:must-fail (REFUSED - a sibling lane holds port 6461); perf.mjs; lint.</p>
+<p>NOTHING LANDED - the critic's git against FraggleRock-ag was refused because worktree isolation pinned it to a FraggleRock worktree. Its two code blocks are the deliverable and are in this gap. THAT IS THE SECOND CRITIC BLOCKED THIS WAY.</p></div>
+</article>
+<article class="piece s-pending" id="p17">
+  <header>
+    <span class="num">17</span>
+    <h3>Whole-game blind A/B vs the bar</h3>
+    <span class="round">r0</span>
+    <span class="status">pending</span>
+  </header>
+  <div class="gap"><p class="empty">No gap recorded.</p></div>
+</article>
+</div>
 
-  <section>
-    <h2>The board</h2>
-    <p class="sub">
-      Round numbers are how many times a critic sent the piece back. A high number is not a problem —
-      it is the loop working. Piece 08 is on its seventh round because six critics each found something real.
-    </p>
+<h2>Recent log</h2>
+<ol class="log">
+<li><time>2026-08-25T17:22:57.687Z</time>Coordinator: progress.mjs single-writer guard replaced. It asked 'is my path under .claude/worktrees/' - a denylist of shapes - and a critic running from a TEMP copy wrote a perf row straight past it. Now the board stamps its owning root and every other root is refused without needing to be anticipated. Escape hatches intact: --board &lt;dir&gt; unchanged, and 'progress claim' moves ownership deliberately. Red-verified against two mutants incl. the exact predecessor (4 arms red).</li>
+<li><time>2026-08-25T17:12:12.916Z</time>15 r1: lane died mid-build; coordinator audit rather than a critic round. createJuice IS wired into main.ts and the composition is sound, but makeShake1D/2D and hitStop have ZERO consumers in src outside their own unit test - nothing in the game rattles, and shake is half the piece's name. easeInOutCubic also dead. 'transitions' has never been audited at all. No critic verdict, no blind, no raster evidence exists for this piece.</li>
+<li><time>2026-08-25T17:07:21.655Z</time>12 r6: CRITIC REFUSED. The perf claim does not replicate - shipped dirty 2 runs in 3, worst 50.0ms, against 'nothing exceeded 20ms'. Blur arm dirty 1 in 2. Arms overlap completely: 'the blur costs nothing' is UNMEASURED, not zero. Structural cause reaches past piece 12 - stutter.mjs cuts a 60-interval control from a 2270-interval recording, so a 1-in-2270 event is absent from the control ~97% of the time and machine noise is promoted to MISSED. r7 fixes the instrument. Veil stays. 0.55 burst kept - the question's premise was wrong, it is an AI's prize moment not the player's. translateX(em) class audited live-cascade across all four stages: clean.</li>
+<li><time>2026-08-25T16:50:48.298Z</time>COORDINATOR, routed not fixed: the board's single-writer refusal at progress.mjs:273 is a PATH REGEX for .claude/worktrees/, so a critic working from a TEMP copy does not match and perf.mjs wrote the perf row anyway. Same defect shape as the climb pin above - the check holds while the property it stands for, 'am I the coordinator', is false</li>
+<li><time>2026-08-25T16:50:48.235Z</time>CORRECTION to a note this board recorded as settled: the garland ruling was written as 'car 0 loses ZERO pixels'. Measured at climbTo(1) it occludes 400 px of car0 and 960 of car3. The ruling is NOT reopened - it may rest on the real finish pose rather than the climb pin - but the zero must not be re-cited</li>
+<li><time>2026-08-25T16:50:48.165Z</time>THE SWAY CLASS IS CLOSED: installWorld's update() is called by no vitest pin, so wheel, carousel and lamp pivots are all posed at construction - but driving it over 41 samples across a full 66s race moved NOTHING. Round 4's 44 px class does not recur elsewhere in this scene</li>
+<li><time>2026-08-25T16:50:48.098Z</time>07: the valance exclusion is inert until the finish, where it hides a DESIGN.md contradiction - the valance occludes 42 px of lane 3's kart and the design says it may never reach down to meet it. The pin that should catch it evaluates at x=0, but off-axis lanes project HIGHER (car3 0.9806 vs car0 0.9583), so THE PIN HOLDS WHILE THE PROPERTY IT STANDS FOR IS FALSE</li>
+<li><time>2026-08-25T16:50:48.034Z</time>07: the bar is a DARK panel with SOFT folds and ours is a BRIGHT panel with HARD folds - exactly inverted. rubric.json asks for 'broad soft fold highlights AND genuinely near-black fold cores' and r5 shipped the second half and the inverse of the first. Round 3 read as painted pillars; round 5 traded that for corrugation</li>
+<li><time>2026-08-25T16:50:47.973Z</time>07 r5 critic: the premise was measurably WRONG and wrong in the direction that flattered the build. booth-02 repeats every 2.69 percent of width and booth-01 every 2.40, not 'about 2' - we are at 1.09, two and a half times FINER, and finer was treated as safe when it is the defect direction. Fold swing 15.2 lum against the bar's 1.7-2.4, on a panel BRIGHTER than the bar's</li>
+<li><time>2026-08-25T16:27:08.579Z</time>ROOT CAUSE of the committed lock piece 07 found: withLock released in a finally, but refuseLaneWrite calls process.exit(2) from INSIDE it, so every refused lane write leaked progress/.state.lock/ - untracked, under no ignore glob, one git add -A from being committed. Now released on an exit hook</li>
+<li><time>2026-08-25T16:27:08.509Z</time>12 r6 answered 0.55 vs 1.0 off the raster: at glory 1.0 the rays run OFF a 1080 px frame, at 0.55 they close 200+ px inside it. Two different readings rather than two amounts of one, and the visible ratio is 0.44-0.47 because glory rides opacity AND scale. Verdict: keep 0.55</li>
+<li><time>2026-08-25T16:27:08.430Z</time>12 r6 re-derived the stutter on a page that paints and MARGINAL RATHER THAN STRUCTURAL SURVIVES - five interleaved runs, 0 long frames shipped, with a negative control at blur(60px) producing 4. But two r5 readings do NOT re-derive: hiding the banner relocated nothing and the blur costs nothing, and 'the dotted border is the next lever' is STRUCK - there is nothing left to price</li>
+<li><time>2026-08-25T16:27:08.356Z</time>12 r6: the nameplate was tracking 2.9x too far because em INSIDE A TRANSFORM resolves against the element's own font-size, and .eg-prize-name is 2.9em - intended -42.08 px, applied -122.02 px. It read as correct in r5 ONLY because that rule was one of the 63 the missing brace swallowed: the arithmetic was right while the CSS was dead</li>
+<li><time>2026-08-25T16:19:10.906Z</time>The tip is PUBLISHED AND PLAYABLE at https://adamofmoore.github.io/bullseye-derby/ - a single-file snapshot rebuilt from cc8039827, verified by driving it: 0 W to 411 W on ArrowUp, live WebGL, zero console errors. It is a snapshot and does NOT update as lanes land; the pipeline that would is publish-prototypes.yml, which needs archery-gauntlet's Azure app provisioned</li>
+<li><time>2026-08-25T16:19:10.831Z</time>COORDINATOR ERROR, found by the lane: I broke the branch tip's lint gate. tools/single-file.mjs had a sparse array from my own commit 5c0eabb00 - I ran the gates BEFORE writing that tool and committed it without re-running them. Also removed progress/.state.lock/, which had been committed onto the branch: a committed lock is a lock nobody can take</li>
+<li><time>2026-08-25T16:19:10.758Z</time>07 r5 found the hole nothing was measuring: VITEST POSES PIVOTS AT REST AND THE GPU PLATE DOES NOT. r4's 0.045 rad on a 2.27 m cord swings a star 44 px straight across the fabric's inner edge - caught only because a re-captured plate read the drape 17 px further in than the software model</li>
+<li><time>2026-08-25T16:19:10.677Z</time>07 r5: the fold rank now lays out against the post's SCREEN position via a fraction-of-frame-height reach, so four folds sit inboard of the post at every window shape and the presented ridge count is the SAME eighteen numbers at all ten aspects. r4's own pin was red at five of nine; it is green at all ten now</li>
+<li><time>2026-08-25T15:16:28.736Z</time>16 r5 refused to repeat the mistake it was fixing: it deleted both frozen toBeCloseTo(0.277) lines and did NOT replace them with toBe(0), because two runs of the fixed instrument gave 15/15 zero once and 0.35/0.47 percent the other. It pins the WORST CHANNEL instead - re-raster lands +/-2, resample moves 13-102, and the old artefact's channel of 84 reds under it</li>
+<li><time>2026-08-25T15:16:28.687Z</time>16 r5: the dpr guard lands - M2 (subtracting applied.x*ratio) now reds 4 and M3 (snapToDevicePx quantising only at ratio 1) reds 8, where both shipped GREEN before. The resize loop asserts appliedOffset != 0 before each step so the subtraction is provably load-bearing rather than vacuously satisfied. With the honest noise arm, shipped-dpr1 re-cuts to 15/15 at exactly 0.000 percent</li>
+<li><time>2026-08-25T15:16:28.629Z</time>The brace bug was invisible to every instrument: tsc cannot see inside a template literal, eslint has no CSS rule, every plate still rendered something, and vitest printed 'Could not parse CSS stylesheet' NINE TIMES IN ONE FILE and passed anyway. That warning was the suite telling us for hours and being read as noise. Now double-pinned by brace-balance walks in scrim.test.ts and wall-host-nudge.test.ts, both verified to red</li>
+<li><time>2026-08-25T15:16:28.561Z</time>LIVE REGRESSION FOUND AND FIXED: .eg-trophy lost its closing brace in be01deed1, and Blink's CSS nesting parsed the 63 rules after it as descendants of a CANVAS, so none matched. The whole leaderboard and the entire prize wall were unstyled - .eg-wall laid out 1920px at left:0 with all fifteen copies at x=-960, OFF SCREEN. Found independently by 12's critic and by 16 r5</li>
+<li><time>2026-08-25T14:34:19.299Z</time>14 r6: the bed is now a measured correlation form with rho off three renders per pair, cars+crowd at +0.5335. Error across 11 rendered beds is +0.00 to +0.10 dB and NEVER NEGATIVE - one-signed toward warning. The -10.58 dB mix now reads masked, all 495 warn, and the fingerprints now PARTITION AUDIO_TUNING, which found SEVEN keys pinned by nothing rather than one</li>
+<li><time>2026-08-25T14:34:19.229Z</time>05 r6's new ABORTED exit code caught a live false green within the hour: racefilm --prove-void-adapter had NEVER ONCE FIRED. With no server on 4261 it died on ERR_CONNECTION_REFUSED, the old catch-all dressed that as exit 2, and the message assertion matched the tool's OWN BANNER printed before any browser launched. A must-fail arm green in exactly CI-shaped conditions</li>
+<li><time>2026-08-25T14:34:19.160Z</time>08 r7: riders went from helmet balls to 2.1-2.6x on the character and 4.8-7.6x on the body, by shrinking the KARTS not growing the frame. Car 3 no longer reads boxy on either instrument. Lane 3's painted column moved 20 px LEFT to 1689-1692 so piece 07's gap is now 80-90 px, and the abutting mesh is no longer cream</li>
+<li><time>2026-08-25T14:34:19.098Z</time>12 r5 refuted its own inherited hypothesis: the trophy's second canvas is INNOCENT - created up front, and outcome-&gt;standings where it is first sized 626x972 is 0/5 dirty. And it was one event not two: all five boundary windows read 0 long frames while in-outcome was dirty in every run</li>
+<li><time>2026-08-25T14:34:19.038Z</time>12 r5: the stutter was .eg-scrim backdrop-filter blur and it was NEVER main-thread work - one frame of 61.6 ms of which 60.5 ms was BEFORE RENDERING STARTED, which is why every layer-promotion arm failed and why __GPU_MS__ read 1 ms straight through it. Three richer replacements were all WORSE than the defect, so the fix removes work: render at 1/6 pixel ratio and let the bilinear upscale be the defocus</li>
+<li><time>2026-08-25T14:28:45.426Z</time>COORDINATOR: observed test/racefilm.test.mjs REFUSES-a-software-adapter fail once in a full parallel run at 88/1753, then pass alone (74/74) and pass in a full run at 91/1787 exit 0. Recorded rather than dismissed - it is the arm 05 r6 had just repaired from a never-fired false green, and port 4261 contention is the suspect</li>
+<li><time>2026-08-25T14:28:45.352Z</time>16 r4 critic: both load-bearing constructs are pinned only at dpr 1. Two mutations ship GREEN - subtracting applied.x*ratio, and snapToDevicePx returning cssPx unless ratio is 1. Eight tests catch both. And the 0.277 percent residual is the INSTRUMENT: noisePct under-reports its own floor because it plates twice with no invalidation, and wall-blit.test.ts:164 freezes that artefact as an invariant</li>
+<li><time>2026-08-25T14:28:45.282Z</time>07 critic judgements: the garland is DEPTH not defect - car0 is the PLAYER and loses ZERO px, the 1548 is the leftmost AI car's cab roof in the top 7 percent of frame. The lamp at 36 px is not crowding but is the wrong object - a flat cream star aiming at the kart's rear wheel. And the gap pin is measured over a HAND-PICKED mount set: over every mount a midway bulb sits at 19 px, under the pin's own 25 px floor</li>
+<li><time>2026-08-25T14:28:45.231Z</time>07 r4 critic: the fullness is NOT ON SCREEN. 91.6 percent of painted drape pixels are ONE cylinder and four meshes paint zero, because the proscenium post sits in front of the rank - and the drape anchor rides the frame corner while the post does not, so r4's own pin REDS at five of nine supported aspects including 1920x950</li>
+<li><time>2026-08-25T13:54:05.316Z</time>ROUTED TO 07's CRITIC, not decided by a lane: the garland eats 1548 px of car 1 at the finish pose, about 7 percent and 3.4x the 452 px the legibility file already calls acceptable. By DESIGN.md 4a and pre-existing, but the finish is the payoff moment. Depth or defect</li>
+<li><time>2026-08-25T13:54:05.245Z</time>07 r4 named the root of my own error: screenBoxOf(car3).x1 minus 1 sits 8-9 px PAST the kart's last painted pixel, so a bbox edge read against a painted edge manufactured the zero gap. Floor break turned out NOT BUILDABLE - the hem meets the deck 611 screen rows below the last row anyone sees - and that is pinned as a measurement rather than asserted</li>
+<li><time>2026-08-25T13:54:05.194Z</time>07 r4 landed and audited: 88 files / 1697 tests, zero test deletions. The flare is BOUGHT not spent - the whole profile is capped UNDER round 3's narrowest in-frame reach, so the panel is a strict subset of r3's columns at every row and cannot clip lane 3. Clear gap goes 2-3 px to 61-72 px</li>
+<li><time>2026-08-25T13:20:25.279Z</time>16 r4 narrowed the stutter to a line: all 11 long frames land inside [OUTCOME_DELAY_S, OUTCOME_DELAY_S+POP_S] = [0.600s, 0.950s], and flow.ts:306 fires its one scheduled beat at 0.6s - the banner pop01 ramp and, on a win, burstCount++. That is 12's +667ms burst seen from the other side, and 12 has been sent it mid-round</li>
+<li><time>2026-08-25T13:20:25.216Z</time>16 r4 landed and audited: deleting align()'s per-copy transform takes the fifteen copies from 15/15 resampled to 0/15, and the host nudge is proved LOAD-BEARING by a controlled pair - 1 device px of ancestor offset leaves all fifteen bit-identical, 0.5 device px moves 16.68 percent. wall-grid retired rather than repaired; 39 tests out, 47 in, net +8</li>
+<li><time>2026-08-25T13:16:12.268Z</time>CI, from 05's critic: the flake is LOCAL-ONLY. One lane means an empty queue and the guards never hold. It is a reason to fix the nesting before adding CI, not a reason CI would be red</li>
+<li><time>2026-08-25T13:16:12.214Z</time>OPERATIONAL, measured live: the shared permit ledger read 19 launches in the last 60s against a ceiling of 20, 67 in 300s, 136 in 900s. This machine sits ONE launch under the ceiling at current lane count - the rate guard is doing its job, and it is the reason not to widen the fleet</li>
+<li><time>2026-08-25T13:16:12.163Z</time>FLAKE SOLVED, and it is not contention: two 600s waits nested inside a 180s spawnSync kill. Reproduced deterministically with ZERO browsers by seeding the permit ledger. Second defect: keydrive maps every unexpected exception onto exit 2, the SAME code that means correctly-refused, so an infra abort wears a refusal's clothes. racefilm.test.mjs has the identical nesting armed across 8 cases</li>
+<li><time>2026-08-25T13:16:12.089Z</time>05 r5 critic: the circularity MOVED to play-drive.mjs. HAND.holdThreshold is wired onto BOTH sides - it sets the hand's changeover AND the test forces BAR_OFFSET_FRAC to follow it. One number 0.03 to 0.05 turns two of four named controls RED to GREEN. The shipped ride never moves; only the bar moves, 65s to 89s</li>
+<li><time>2026-08-25T13:16:12.033Z</time>14 r5 critic: the quadrature bed model was checked at ONE of 14,641 reachable bed settings and is 1.8 dB OPTIMISTIC everywhere Midway is down. graph.ts taps ONE noise buffer for jet stream, car ratchets, crowd and music percussion, so cars and crowd correlate at rho 0.53. The calliope hides it at bed 1 - and turning Midway down is exactly what MASKED_ADVICE tells the rider to do</li>
+</ol>
 
-    <div class="scroller">
-      <table>
-        <thead>
-          <tr><th>#</th><th>Piece</th><th>Round</th><th>State</th></tr>
-        </thead>
-        <tbody>
-          <tr><td class="t-id">00</td><td class="t-name">Scaffold + gauntlet contract</td><td class="t-round">r1</td><td class="t-state"><span class="chip chip-pass">passed</span></td></tr>
-          <tr><td class="t-id">01</td><td class="t-name">Measurement harness</td><td class="t-round">r1</td><td class="t-state"><span class="chip chip-pass">passed</span></td></tr>
-          <tr><td class="t-id">02</td><td class="t-name">Reference bar (Switch 2 frames)</td><td class="t-round">r3</td><td class="t-state"><span class="chip chip-pass">passed</span></td></tr>
-          <tr><td class="t-id">03</td><td class="t-name">Sim core: power → accuracy → ring → speed</td><td class="t-round">r3</td><td class="t-state"><span class="chip chip-pass">passed</span></td></tr>
-          <tr><td class="t-id">04</td><td class="t-name">Live progress page</td><td class="t-round">r2</td><td class="t-state"><span class="chip chip-pass">passed</span></td></tr>
-          <tr><td class="t-id">05</td><td class="t-name">Power input + trainer feed</td><td class="t-round">r6</td><td class="t-state"><span class="chip chip-round">in round</span></td></tr>
-          <tr><td class="t-id">06</td><td class="t-name">Renderer + camera rig</td><td class="t-round">r4</td><td class="t-state"><span class="chip chip-pass">passed</span></td></tr>
-          <tr><td class="t-id">07</td><td class="t-name">Carnival booth + midway world</td><td class="t-round">r5</td><td class="t-state"><span class="chip chip-round">in round</span></td></tr>
-          <tr><td class="t-id">08</td><td class="t-name">Racer karts + characters</td><td class="t-round">r7</td><td class="t-state"><span class="chip chip-round">in round</span></td></tr>
-          <tr><td class="t-id">09</td><td class="t-name">Bullseye target + hit feedback</td><td class="t-round">r3</td><td class="t-state"><span class="chip chip-pass">passed</span></td></tr>
-          <tr><td class="t-id">10</td><td class="t-name">Water jet VFX + splash</td><td class="t-round">r1</td><td class="t-state"><span class="chip chip-pass">passed</span></td></tr>
-          <tr><td class="t-id">11</td><td class="t-name">HUD: power, target, accuracy, positions</td><td class="t-round">r2</td><td class="t-state"><span class="chip chip-round">in round</span></td></tr>
-          <tr><td class="t-id">12</td><td class="t-name">Race Complete + leaderboard</td><td class="t-round">r6</td><td class="t-state"><span class="chip chip-round">in round</span></td></tr>
-          <tr><td class="t-id">13</td><td class="t-name">Prize wall picker</td><td class="t-round">r1</td><td class="t-state"><span class="chip chip-round">in round</span></td></tr>
-          <tr><td class="t-id">14</td><td class="t-name">Audio: midway music, water, dings, crowd</td><td class="t-round">r6</td><td class="t-state"><span class="chip chip-round">in round</span></td></tr>
-          <tr><td class="t-id">15</td><td class="t-name">Juice pass: camera, shake, transitions</td><td class="t-round">r1</td><td class="t-state"><span class="chip chip-stale">lane died</span></td></tr>
-          <tr><td class="t-id">16</td><td class="t-name">Performance: 60 fps, GPU budget, no stutter</td><td class="t-round">r5</td><td class="t-state"><span class="chip chip-round">in round</span></td></tr>
-          <tr><td class="t-id">17</td><td class="t-name">Whole-game blind A/B vs the bar</td><td class="t-round">—</td><td class="t-state"><span class="chip chip-pending">pending</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="legend">
-      <span class="chip chip-pass">passed</span> a critic found no gap ·
-      <span class="chip chip-round">in round</span> builder or critic working now ·
-      <span class="chip chip-stale">lane died</span> needs restarting ·
-      <span class="chip chip-pending">pending</span> not started
-    </p>
-  </section>
-
-  <section>
-    <h2>What the critics caught</h2>
-    <p class="sub">
-      Six findings worth a teammate's attention. Each one was invisible to the gates — the suite was green
-      through every one of them.
-    </p>
-
-    <div class="findings">
-
-      <article class="card">
-        <div class="card-head"><span class="tag">Piece 12 · critic</span><h3>One missing brace was deleting the leaderboard and the whole prize wall</h3></div>
-        <p>
-          <code>.eg-trophy</code> shipped without its closing <code>}</code>. Blink supports CSS nesting, so it
-          did not error — it parsed the <strong>63 rules that follow as descendants of a <code>&lt;canvas&gt;</code></strong>,
-          which has no element children. None of them ever matched.
-        </p>
-        <dl class="measure">
-          <div><dt>Standings heading</dt><dd>10.8 px <span style="color:var(--text-3)">(60.5 authored)</span></dd></div>
-          <div><dt>Prize wall</dt><dd>a black disc</dd></div>
-          <div><dt>Wall copies</dt><dd>all 15 at x = −960</dd></div>
-        </dl>
-        <p>
-          It was invisible to every instrument: TypeScript cannot see inside a template literal, ESLint has no
-          CSS rule here, and every screenshot still rendered <em>something</em>. Vitest printed
-          <strong>"Could not parse CSS stylesheet" nine times in one file and passed anyway</strong> — the suite
-          had been saying so for hours and it read as noise. Now pinned by a brace-balance walk in two files.
-        </p>
-      </article>
-
-      <article class="card">
-        <div class="card-head"><span class="tag">Piece 12 · round 5</span><h3>The frame drops were never main-thread work</h3></div>
-        <p>
-          Five rounds hunted a stutter at the results screen. Chromium's Long Animation Frame attribution
-          settled it: the cost was <code>backdrop-filter: blur()</code> on a viewport-sized box — the compositor,
-          not our code.
-        </p>
-        <dl class="measure">
-          <div><dt>Long frame</dt><dd>61.6 ms</dd></div>
-          <div><dt>Before render started</dt><dd>60.5 ms</dd></div>
-          <div><dt>Script over 5 ms</dt><dd>none</dd></div>
-        </dl>
-        <p>
-          That is why every layer-promotion attempt failed, and why our own GPU timer read ~1 ms straight
-          through it — the query measures our context, not the compositor. Three richer replacements were built
-          and <strong>all three measured worse than the defect</strong>, so the fix removes work instead: render
-          at 1/6 resolution behind the results and let the upscale be the defocus.
-        </p>
-      </article>
-
-      <article class="card">
-        <div class="card-head"><span class="tag">Piece 08 · critic</span><h3>The drivers were helmet balls</h3></div>
-        <p>
-          Six rounds argued about kart bodywork. Nobody had measured the characters — the half of the piece it
-          is named after.
-        </p>
-        <dl class="measure">
-          <div><dt>Head, of the character</dt><dd>74–79 %</dd></div>
-          <div><dt>Torso + arms + gloves</dt><dd>1.7–4.0 % of the kart</dd></div>
-          <div><dt>Reference frames</dt><dd>largest single mass</dd></div>
-        </dl>
-        <p>
-          Worse than a look: the rider ships a lean rig, arm pivots, a mouth and blush. At 300 px of body the
-          pose rig animated nothing a player could see. The fix was the right root —
-          <strong>the karts were too big for their drivers, not the drivers too small for the frame</strong> — and
-          shrinking the bodywork took body pixels up 4.8–7.6×.
-        </p>
-      </article>
-
-      <article class="card">
-        <div class="card-head"><span class="tag">Piece 14 · critics</span><h3>The rider could not hear the water over the midway</h3></div>
-        <p>
-          The audio panel told players a mix was fine when the on-power cue was inaudible. Round 4 proved every
-          mix it called "sounding" carried a sample — but rendered each with the other four channels
-          <em>at zero</em>, so it answered "does a sample exist", not "can I hear it".
-        </p>
-        <dl class="measure">
-          <div><dt>Cue under the fairground</dt><dd>−24.5 dB</dd></div>
-          <div><dt>Mixes affected</dt><dd>19 of 99</dd></div>
-          <div><dt>Presses to "fix" it</dt><dd>1</dd></div>
-        </dl>
-        <p>
-          The damning form: the panel warns, advises "press +", and <strong>one press clears the warning while
-          leaving the rider 24.5 dB down</strong>. The next critic then found the replacement model was validated
-          at one of 14,641 possible mixes and was 1.78 dB optimistic everywhere else — because a single noise
-          buffer feeds the cars, the crowd <em>and</em> the music, so they correlate instead of adding
-          independently.
-        </p>
-      </article>
-
-      <article class="card">
-        <div class="card-head"><span class="tag">Piece 16 · critic</span><h3>The fix for the blurry prize wall was causing it</h3></div>
-        <p>
-          Round 3 snapped every prize image to the device-pixel grid and reported success. Measured in actual
-          pixels, all fifteen were being resampled — and the snap was the entire cause.
-        </p>
-        <dl class="measure">
-          <div><dt>As shipped</dt><dd>15/15 resampled</dd></div>
-          <div><dt>Snap removed</dt><dd>0/15 — bit-identical</dd></div>
-        </dl>
-        <p>
-          Chromium snaps an image's paint rect in its own local space, so a fractional <em>layout</em> position is
-          already fine — but a transform lands <em>after</em> that snap. And because
-          <code>getBoundingClientRect</code> reports layout plus transform, <strong>the guard read the broken case
-          as perfect</strong>. Two guards ended up contradicting each other; only one had a control.
-        </p>
-      </article>
-
-      <article class="card">
-        <div class="card-head"><span class="tag">Infrastructure</span><h3>A must-fail test that had never once fired</h3></div>
-        <p>
-          A test asserting the tool refuses a software GPU adapter was green — because with no server running it
-          died on <code>ERR_CONNECTION_REFUSED</code>, a catch-all dressed that as the "correctly refused" exit
-          code, and its message check matched the tool's <em>own banner</em>, printed before any browser launched.
-        </p>
-        <p>
-          It was caught within the hour by giving infrastructure aborts their own exit code — a fix made for an
-          unrelated flake. <strong>Green in exactly the conditions CI would run in, and it had never
-          demonstrated the thing it existed to prove.</strong>
-        </p>
-      </article>
-
-    </div>
-  </section>
-
-  <section>
-    <h2>The machine</h2>
-    <p class="sub">
-      The loop crashed this workstation five times with <code>0x119 VIDEO_SCHEDULER_INTERNAL_ERROR</code> before
-      anything read the machine's own distress signals. One crash also rearranged the desktop icons — the
-      display topology drops out during the reset and Windows re-flows the desktop to a smaller grid.
-    </p>
-    <div class="callout">
-      <h3>Two guards now sit in front of every browser launch</h3>
-      <ul class="tight">
-        <li><strong>Health.</strong> Reads the Windows event log for driver resets and recent bugchecks, and
-          refuses to launch when the machine is in distress. Unknown is not treated as healthy — a failed query
-          admits it rather than returning zero.</li>
-        <li><strong>Rate.</strong> A cross-process permit pool caps launches at <span class="num">20</span> per
-          minute — <span class="num">1,200</span>/hour against the <span class="num">2,970</span>/hour that
-          bugchecked. It waits rather than refusing.</li>
-      </ul>
-      <p>
-        The ledger has since measured this machine sitting at <strong>19 launches against a ceiling of 20</strong>,
-        continuously, at full lane count. The guard is doing its job — and that is the reason not to widen the
-        fleet rather than raise the ceiling.
-      </p>
-    </div>
-  </section>
-
-  <section>
-    <h2>One decision outstanding</h2>
-    <div class="card">
-      <h3>These 1,825 tests have never run in CI</h3>
-      <p>
-        <code>prototype-suites.yml</code>'s matrix covers two other prototypes and not this one, so the suite only
-        ever runs when a human types the command. That workflow's own header records a previous prototype joining
-        with 25 test files that had never run.
-      </p>
-      <p>
-        Adding it is one matrix line. The argument for doing it now is the never-fired must-fail test above —
-        that is precisely the class of defect a human running tests locally will never see. The argument for the
-        short wait was the flake underneath it, <strong>which is fixed</strong>: two ten-minute waits nested
-        inside a three-minute kill, reproduced deterministically with zero browsers launched.
-      </p>
-    </div>
-  </section>
-
-  <footer>
-    <p>
-      Branch <code>prototype/archery-gauntlet</code> · everything on this page is pushed ·
-      board state as of the run's 157th commit.
-    </p>
-    <p>
-      Round numbers, gap text and the full decision log live in <code>progress/state.json</code>, written only by
-      the coordinator so concurrent lanes cannot clobber each other.
-    </p>
-  </footer>
-
+<footer>
+  Generated by <code>tools/board-page.mjs</code> from <code>progress/state.json</code>.
+  Re-run it and re-publish to refresh; the page is a render, never a hand-kept copy.
+</footer>
 </div>
