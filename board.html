@@ -82,12 +82,12 @@ a { color:var(--drape); }
 <header class="top">
   <h1>Bullseye Derby Run Board</h1>
   <p class="sub">Every piece, the gap its last critic named, and what is in flight.</p>
-  <p class="stamp">state.json updated 2026-08-25T20:25:45.950Z · page generated from the live board</p>
+  <p class="stamp">state.json updated 2026-08-25T20:47:02.675Z · page generated from the live board</p>
   <ul class="tally">
     <li><b>0</b> building</li>
-    <li><b>12</b> round</li>
+    <li><b>13</b> round</li>
     <li><b>1</b> pending</li>
-    <li><b>6</b> passed</li>
+    <li><b>5</b> passed</li>
   </ul>
   <div class="perf">perf: fps=60  p99=16.8  gpuP95=3.85  at=2026-08-25T18:27:14.690Z</div>
 </header>
@@ -103,14 +103,31 @@ a { color:var(--drape); }
   </header>
   <div class="gap"><p class="empty">No gap recorded.</p></div>
 </article>
-<article class="piece s-passed" id="p01">
+<article class="piece s-round" id="p01">
   <header>
     <span class="num">01</span>
     <h3>Measurement harness</h3>
-    <span class="round">r1</span>
-    <span class="status">passed</span>
+    <span class="round">r2</span>
+    <span class="status">round</span>
   </header>
-  <div class="gap"><p class="empty">No gap recorded.</p></div>
+  <div class="gap"><p>VOID NOW NAMES THE CLAIM IT REFUSES. Landed and merged at eaf4d4cb2. Coordinator-verified: tsc 0, eslint 0, 103 files / 2112 tests, must-fail 21/21 RED, no band-aid spelling, no CI-conditional, no 'ignore the adapter' flag anywhere in the diff, and the one removed test title is a RENAME with the arm still present.</p>
+<p>THE PROOF THE GUARD COLLAPSED TWO QUESTIONS IS IN ITS OWN TEXT. The sentence 'any timing from it is a measurement of this CPU' came out of classifyAdapter, so CAPTURE.MJS WAS PRINTING IT OVER A REFUSAL ABOUT PIXELS and keydrive over refusals about neither. assertHardwareAdapter(adapter, claim) now REQUIRES the claim - it throws a TypeError without one, so a call site cannot be added without saying what it was about to publish. The placement rule lives in its own doc comment: A PREDICATE GOES ABOVE THE GUARD ONLY WHEN A CPU RASTERISER CANNOT MANUFACTURE IT.</p>
+<pre>THE HYPOTHESIS HELD FOR 5 OF 12 AND WAS REFUTED FOR 6, WITH A TERM NAMED FOR EACH. Measured under --bare (SwiftShader, the CI adapter, on an RTX 5080):
+    --prove-wrong-source     REFUSED   race.power.sourceId is &quot;trace&quot;
+    --prove-self-driving     REFUSED   race.power.watts is 210, not 0
+    --prove-deaf-keys        REFUSED   ArrowUp does not reach the rider + ramp 172.977..180.393W
+    --prove-one-way-keys     REFUSED   ArrowDown does not reach the rider + ArrowUp passed
+    --prove-unwired-sim      REFUSED   covered 0.000m
+    --prove-control --bare   VOID      the certification claim
+    --prove-void-adapter     VOID      swiftshader
+On the RTX 5080 --prove-control still drives: 7.3 m covered against 0 m untouched.</pre>
+<p>LINE 844 MOVED TOO, AND NOT BY LUCK: the band is [rampDistance(delta-race - overhead - 2*frame), rampDistance(delta-race)] and the only renderer-sensitive term moves the LOWER end DOWN. A refusal off a widened band would have been a refusal off a narrower one - it is FALLING THROUGH the band that software makes unsafe, and that is below the guard.</p>
+<p>WHY SIX STAY VOID, each with its term rather than a shrug: racefilm's refusals are pixel ratios against a SAME-RUN RELOAD FLOOR, and the frozen-clock fixture animates on the WALL clock, so that floor measures drift across one 250 ms settle and moves with the renderer. The --player-error arm rests on probeParamRefusal's 8000 ms boot deadline, so A PAGE TOO SLOW TO PUBLISH ready READS AS A PAGE THAT REFUSED THE PARAMETER - on a CPU rasteriser that arm can pass WHILE TESTING NOTHING. Both ACCEPTS arms are certifications and assert sidecar.adapter.software === false.</p>
+<p>ONE HONEST EXCEPTION RECORDED RATHER THAN DRESSED UP: --prove-stalled-clock's predicate has NO manufacturable term (liveAdvanceBoundS only widens the slack). It is unreachable without plates only because the clock is read inside shoot(). Giving racefilm's ladder a clock-only pass ahead of the plates is a FILM-LOOP change, not a guard change, and the lane did not attempt it. THAT IS THE NEXT ROUND HERE.</p>
+<p>A DEFECT THE GUARD WAS HIDING, FOUND ON THE WAY: A BAND WHOSE FLOOR IS 0 W ACCEPTS A BUILD WITH NO KEY BINDINGS AT ALL, and keydrive would have printed 'the arrow keys DRIVE this build' over it. Pre-existing, and invisible because every machine slow enough to expose it was a software adapter. Now refused below the line, pinned by 'a band that admits zero admits a DEAF KEY, which is why it cannot certify'.</p>
+<p>THE LANE CAUGHT ITS OWN OVERCLAIM: its first commit message said the arrival/band split fixed a live hardware defect. IT DOES NOT - at the 1.5 s fixture hold the floor is 172.977 W so the two forms agree on every adapter that certifies - and it amended the message before pushing rather than leave it.</p>
+<p>Instrument suites all run by the lane after its last edit: provenance 7/7, stutter 7/7, gate 4/4, pool 6/6, wallblit selftest exit 0.</p>
+<p>NOT DONE: did not run audio:cue or audio:bed, having touched one line of audio-cue.mjs (a claim string inside its existing downgrade-to-warning catch) covered by tsc and eslint only, NOT by a browser run.</p></div>
 </article>
 <article class="piece s-passed" id="p02">
   <header>
@@ -405,6 +422,7 @@ BAR MEDIAN 2.3 %. OURS 19x THAT. Attributed by connected component as frame area
 
 <h2>Recent log</h2>
 <ol class="log">
+<li><time>2026-08-25T20:47:02.674Z</time>01 r2: VOID names the claim it refuses. assertHardwareAdapter(adapter, claim) now THROWS without a claim, so a call site cannot be added without saying what it publishes. Hypothesis held 5 of 12, REFUTED for 6 with a term named for each - racefilm's are pixel ratios against a same-run reload floor that moves with the renderer, and --player-error rests on an 8000 ms boot deadline so a slow page reads as a refusing page. One honest exception recorded (stalled-clock has no manufacturable term; it is blocked by plumbing, not truth). Found a defect the guard was HIDING: a band whose floor is 0 W accepts a build with NO key bindings and keydrive would have certified it.</li>
 <li><time>2026-08-25T20:25:45.949Z</time>05 r7 + guard-ordering landed. dev-browser is GONE from archery-gauntlet's spawn sites and rule 6 is now a TEST (test/dev-browser-ban.test.mjs) rather than prose - it flags the two offending lines in the pre-port tree and ships a fixture proving that naming the tool to ban it is allowed. Guard ordering fixed in THREE tools (keydrive, racefilm AND capture - capture had it too): identity now refuses before assertHardwareAdapter, VOID untouched and still ahead of every sample. Tip 103 files / 2102 tests, must-fail 21/21 red. CI: 2 of 14 red arms fixed; the other 12 are with a lane testing whether VOID should gate TIMING claims only - their assertions are binary behavioural facts, not timing. STILL OUTSTANDING: 20 dev-browser references across five OTHER prototypes.</li>
 <li><time>2026-08-25T19:05:35.187Z</time>MERGED spray-per-racer + piece11-r3-hud + textures. Tip 40da34e7d: 101 files / 2065 tests. Worktree sweep: 16 -&gt; 6, seven retired through the guard with evidence archived; the three still standing are locked and belong to sibling sessions or the live centring lane. Killed an orphaned vite preview (PID 51440) that had outlived its lane by 3 h and was holding a native binding that blocked its worktree's removal. FIXED TWO DEFECTS IN THE RETIRE TOOL ITSELF: it archived a .state.lock as evidence (a committed lock is a lock nobody can take - the board survived only because that stamp was 2 h stale), and it threw a raw spawn object on a failed removal instead of reporting the 17,790 files left behind. Both red-verified. CI: added archery-gauntlet to prototype-suites.yml because the layout gate was RED - 2065 tests gating nothing. Measured first: 81 s, 25 launches, fits the 25 min budget.</li>
 <li><time>2026-08-25T18:49:57.747Z</time>probe: is the board writable after the retire tool archived a .state.lock</li>
@@ -444,7 +462,6 @@ BAR MEDIAN 2.3 %. OURS 19x THAT. Attributed by connected component as frame area
 <li><time>2026-08-25T13:54:05.316Z</time>ROUTED TO 07's CRITIC, not decided by a lane: the garland eats 1548 px of car 1 at the finish pose, about 7 percent and 3.4x the 452 px the legibility file already calls acceptable. By DESIGN.md 4a and pre-existing, but the finish is the payoff moment. Depth or defect</li>
 <li><time>2026-08-25T13:54:05.245Z</time>07 r4 named the root of my own error: screenBoxOf(car3).x1 minus 1 sits 8-9 px PAST the kart's last painted pixel, so a bbox edge read against a painted edge manufactured the zero gap. Floor break turned out NOT BUILDABLE - the hem meets the deck 611 screen rows below the last row anyone sees - and that is pinned as a measurement rather than asserted</li>
 <li><time>2026-08-25T13:54:05.194Z</time>07 r4 landed and audited: 88 files / 1697 tests, zero test deletions. The flare is BOUGHT not spent - the whole profile is capped UNDER round 3's narrowest in-frame reach, so the panel is a strict subset of r3's columns at every row and cannot clip lane 3. Clear gap goes 2-3 px to 61-72 px</li>
-<li><time>2026-08-25T13:20:25.279Z</time>16 r4 narrowed the stutter to a line: all 11 long frames land inside [OUTCOME_DELAY_S, OUTCOME_DELAY_S+POP_S] = [0.600s, 0.950s], and flow.ts:306 fires its one scheduled beat at 0.6s - the banner pop01 ramp and, on a win, burstCount++. That is 12's +667ms burst seen from the other side, and 12 has been sent it mid-round</li>
 </ol>
 
 <footer>
