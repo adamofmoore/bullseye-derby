@@ -1,2 +1,7 @@
 .omc/
+.claude/
+.critic-scratch/
+.critic-verify/
+node_modules/
+dist*/
 *.log

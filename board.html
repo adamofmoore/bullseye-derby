@@ -82,12 +82,12 @@ a { color:var(--drape); }
 <header class="top">
   <h1>Bullseye Derby Run Board</h1>
   <p class="sub">Every piece, the gap its last critic named, and what is in flight.</p>
-  <p class="stamp">state.json updated 2026-08-25T18:27:53.135Z · page generated from the live board</p>
+  <p class="stamp">state.json updated 2026-08-25T19:05:35.187Z · page generated from the live board</p>
   <ul class="tally">
     <li><b>0</b> building</li>
-    <li><b>9</b> round</li>
+    <li><b>11</b> round</li>
     <li><b>1</b> pending</li>
-    <li><b>8</b> passed</li>
+    <li><b>7</b> passed</li>
   </ul>
   <div class="perf">perf: fps=60  p99=16.8  gpuP95=3.85  at=2026-08-25T18:27:14.690Z</div>
 </header>
@@ -244,23 +244,40 @@ The prose says nothing above the driver's shoulders may be a panel, only a post;
   </header>
   <div class="gap"><p>PASSED r3. Critic reproduced the flat-field number (53.4% vs claimed 52.9%) and confirmed all three boundaries survive a squint on OUR face (30.2/46, 40.0/28, 53.1/125 ray-hits). Refuted the builder's defence - the BAR does not collapse under a squint (194 ray-hits) - but the conclusion stands on our own measurement.</p></div>
 </article>
-<article class="piece s-passed" id="p10">
+<article class="piece s-round" id="p10">
   <header>
     <span class="num">10</span>
     <h3>Water jet VFX + splash</h3>
-    <span class="round">r1</span>
-    <span class="status">passed</span>
+    <span class="round">r2</span>
+    <span class="status">round</span>
   </header>
-  <div class="gap"><p class="empty">No gap recorded.</p></div>
+  <div class="gap"><p>SPRAY LANDED AND MERGED. The user reported 'should see the water spray for all players' and there was exactly ONE jet - main.ts:144 bound to the player's mounts, nothing in src/entities/jet/ indexed by racer, three AI towers with nothing hitting them. Now four, one per racer, identical code against per-racer mounts, aim and disc. Coordinator-verified: no band-aid spelling, no GPU guard touched, camera untouched, 21 test registrations added and none removed.</p>
+<p>THE CONTROL SEPARATES: reverting createJets to the player alone fails 8 of 19 in ai-jet.test.ts, and the lane says plainly that the other 11 guard constants that exist either way.</p>
+<p>A LANDMINE FOUND BEFORE IT SHIPPED ONE: world/booths.ts findNozzlePivot identifies the pivot STRUCTURALLY - 'the only child Group forward of the disc plane'. A second forward Group under the booth anchor would have SILENTLY FROZEN AN AI BOOTH IN A GREEN BUILD. The impact anchor hangs off a holder inside the disc group instead, and a test pins that exactly one child still qualifies.</p>
+<p>THE AI TIER IS ARGUED FROM PROJECTED SIZE, NOT TASTE: the splash's clump ring was clumpCount separate Meshes, so four jets meant 56 draw calls for foam alone. Instanced. Booths draw no beam droplets because ninety of them ride inside a 3 px stream. 20 drawable nodes for one jet -&gt; 25 for four, asserted exactly. THE FINDING UNDERNEATH: the booth gun is 0.12-0.17 m from its own disc against the player's 3.44 m, so true similarity puts the AI stream at 0.6 px and booth-scale puts it at 11 px over a 12 px flight - a lump. AI_BEAM_SCALE 0.084 targets ~3 px, and the player's beam stays the only stream long enough to connect anything, pinned as a flight ratio &gt; 10.</p>
+<p>PERF DOES NOT SEPARATE AND IS REPORTED AS A BOUND: n=8 per arm, gpu p50 +0.054 ms and p95 +0.063 ms with RANGES OVERLAPPING ON BOTH, presented percentiles identical across all 16 runs, 0 long frames in every one. An upper bound on an effect the instrument cannot resolve, NOT a measured cost.</p>
+<p>THE PLATE CAUGHT WHAT THE ARITHMETIC MISSED: read at 4x, spray-back specks were landing on the mast and tower timber, reading as dirt - proportionally correct, wrong at 2-4 px. sprayReachMul 0.5 and re-plated.</p>
+<p>ROUTED BACK, NOT TAKEN: the AI gun 0.12 m from its own target is why the booth beam can only ever be ~11 px and needs a scale of its own. Lowering the nozzle pivot ~0.35 m down the mast would make it a genuine proportional miniature, but that means moving the pump/tank/hose in world/booths.ts, which piece 07 was live in. WORTH A PIECE 07 ROUND.</p>
+<p>NOT DONE: no reduced-motion handling. The jet has never read a motion preference - only src/juice/ does - and giving the AI copies one alone would make booths behave differently from the column they mirror. Stated in the module header rather than left implicit.</p>
+<p>INFERRED, NOT MEASURED: that ~3 px is the right legibility floor for the booth stream. An MSAA judgement from the crop, then pinned as a 2-5 px band.</p></div>
 </article>
 <article class="piece s-round" id="p11">
   <header>
     <span class="num">11</span>
     <h3>HUD: power, target, accuracy, positions</h3>
-    <span class="round">r2</span>
+    <span class="round">r4</span>
     <span class="status">round</span>
   </header>
-  <div class="gap"><p>Overtake now reads without a digit: rival kart chip crosses the badge, chevrons, crown returns to the player's ladder chip. Also killed a posing defect its own film exposed - ?t=N replays commits in a loop so wall-clock CSS froze mid-flight and every later posed frame showed a stale callout; transients now posed per render off raceTimeS. Nominated: the callout says WHO but not WHERE - the pass happens up on the towers while the chip crosses in the HUD band.</p></div>
+  <div class="gap"><p>HUD LANDED AND MERGED. Both items were USER-REPORTED from play and both are fixed. Coordinator-verified: no band-aid spelling, no guard or camera touched, 21 test registrations added against 1 removed, and both the removal and a replaced invariant name their subsuming test.</p>
+<p>THE CHEVRONS WERE INVERTED and are fixed as a DECISION rather than a class swap. view.ts:80-83 mapped power-over to the UP arrow and power-under to DOWN. powerIndicator() in hud/model.ts now owns the mapping and render() stamps hud-ind-&lt;glyph&gt;, so the remaining CSS rules are TAUTOLOGIES and no over/under decision can hide in a stylesheet again. MEASURED: no test anywhere had pinned the wrong direction, so nothing was deleted or weakened.</p>
+<p>COLOUR WAS CARRYING THE SAME BUG and would have followed the arrow: the chevrons had HARDCODED red and blue borders. They inherit currentColor now, so hue says WHICH SIDE and the arrow says WHAT TO DO, and they agree about the side.</p>
+<p>THE OVERTAKE CHEVRONS WERE CHECKED, FOUND CORRECT, AND LEFT ALONE - and the lane asserted the keyframe really does travel upward rather than trusting its name. NOTE WHAT THIS FIXED BEYOND THE REPORT: before the change the two chevron vocabularies DISAGREED - up was the bad news on the plate and the good news on the callout.</p>
+<p>THE PROFILE GOES SIX BLOCKS TO FOUR: 215 Roll out (16 s) / 265 The hill (22 s) / 205 Recover (12 s) / 270 Sprint (10 s+forever). Three changes instead of five, average block 15 s against 10.4, no two changes closer than 12 s. THE SHORTEST BOUNDED BLOCK IS RECOVER AT 12 s ON PURPOSE - recovery you have to ration reads as recovery. The largest step stays +65 W BY CONSTRUCTION: RAMP_TOP_RATE_W is tuned so the shipped keyboard covers exactly 65 W in 0.72 s, so a bigger step is one the control cannot answer inside a second, and that is now enforced from the profile side too. NEXT_CUE_S stays 3 - it is a 3-2-1 tick and a 4 s lead puts a '4' on a countdown with no fourth beat.</p>
+<p>AI FINISHING TIMES DID NOT MOVE, TO 1e-12 s, over 200 seeds x 2 signs x 3 riders, bit-identical. And the REASON is now a test rather than a docstring: an AI's tracking error equals |offsetAt(t)| exactly, including across a step.</p>
+<p>THE LANE REPORTED WHAT MOVED AGAINST IT, NOT ONLY THE WINS: flat-150 got 3.4 s WORSE (bigger steps punish a ramp that overshoots), the played race's frame-rate spread grew 0.13 -&gt; 1.02 s, deaf-ArrowDown now finishes 3rd rather than 4th and still fails the bar by 5.08 s, and invariant.test.ts's exact mirror assertion had been passing BY LUCK - it built its pair as T*(1+o)/T*(1-o), which are not bit-exact reflections, and failed by 5e-16 on the new numbers. Rebuilt by reflection, exact by Sterbenz.</p>
+<p>TARGET_PEAK_WATTS MOVED 275 -&gt; 270 AND HAS NO CONSUMER AT ALL. Grep finds only its definition and its test; the HUD power bar its docstring scales does not exist yet. The lane states that as the measurement rather than inferring a bar.</p>
+<p>OUTSTANDING WORK THE LANE COULD NOT DO, AND IT IS A GPU-RULES PROBLEM: src/input/keyboard.ts's mean-error sweep table is STALE and its instrument test/input/play-drive.mjs drives dev-browser, WHICH THE ROOT CLAUDE.md FORBIDS IN THIS REPO OUTRIGHT. So the table now carries that provenance and names what re-deriving it needs - that instrument ported onto tools/adapter.mjs. IT IS ALSO AN UNGUARDED dev-browser CALL SITE LIVING IN THE ONE PROTOTYPE THE RULES DESCRIBE AS GUARDED. Worth its own lane.</p>
+<p>NOT DONE: did not visually confirm the chevrons in a rendered frame. The DOM class and the CSS rule are both asserted; the pixel is not.</p></div>
 </article>
 <article class="piece s-round" id="p12">
   <header>
@@ -362,10 +379,36 @@ THREE CONCLUSIONS, ALL MEASURED: it is NOT filtering - in the margin run the sam
   </header>
   <div class="gap"><p class="empty">No gap recorded.</p></div>
 </article>
+<article class="piece s-round" id="p18">
+  <header>
+    <span class="num">18</span>
+    <h3>Surfaces: material and lighting read</h3>
+    <span class="round">r1</span>
+    <span class="status">round</span>
+  </header>
+  <div class="gap"><p>SURFACES LANDED AND MERGED. User-reported: 'graphic textures could use some improvement'. A new row, because no piece owned this.</p>
+<pre>THE INSTRUMENT NEEDED A CONTROL TO BE VALID, AND THE DISAGREEMENT IS THE FINDING: a raw-pixel dead-flat metric scored the BAR frames as flat (booth-01 at 0.9 %, target-01 at 0.2 %) because it was reading their JPEG dither rather than their art - it separates ENCODERS, not surfaces. Box-downsampling every frame to 240 rows and reading local range over a 3x3 of that downsample measures the same 1.25 % of frame height on every input regardless of native size. Both instruments were run.
+    ours, before                        43.3 % dead flat
+    prize-01 cabinet                    13.1
+    hud-03 course grid                   3.7
+    booth-01 stage                       3.2
+    track-02 plaza                       2.3
+    target-01 three-ring faces            0.8
+BAR MEDIAN 2.3 %. OURS 19x THAT. Attributed by connected component as frame area: sky dome ~14.6 %, ground plane ~9.4 %, tower pylons ~3.7 %, bullseye blue band ~2.7 %.</pre>
+<p>HALF ITS OWN DIAGNOSIS WAS WRONG AND IT REVERTED THAT HALF. It first gave the ground a tiling mottle map, then found rubric.json's track row 1 forbids exactly that: 'Large surfaces are near-flat colour... A detail-normal tiling texture on the ground is a tell that we are not at the bar.' FLAT AREA IS NOT BY ITSELF A LICENCE TO TEXTURE. ground-haze.test.ts now asserts the ground never gains a map.</p>
+<p>WHAT SHIPPED. (1) The tower pylons were a painted brown box reading 127 AT EVERY ONE OF 110 PIXELS across a face - span 0.0 lum. Now boards at 130/123/134/126 with grooves to 109, span 25.0 lum; local RMS contrast 0.81 -&gt; 4.15 and 0.34 -&gt; 4.05. plankTimberMap is generated in-repo, no download, and mean albedo is preserved to 1e-9 by dividing the palette colour by the map's own mean. (2) The ground had a DISTANCE gap, not a texture gap: it is the only surface spanning 13 m to 94 m of camera distance in one mesh and wore ONE constant fade over all of it. Column profile was 196.2 on every one of 28 rows, swing 0.0; now 187.8 -&gt; 199.9 monotone, swing 12.1, against a bar of 19.6 (track-02 grass) and 51.9 (booth-01 stage floor). Exponential extinction toward the sky hue, carried in VERTEX COLOURS - no texture fetch at all.</p>
+<p>THREE DEFECTS CAUGHT BY ITS OWN TESTS RATHER THAN SHIPPED: bake clipped a field authored around 1.0 (peak 1.14) and saturated two of four boards flat at 255, so their grain measured EXACTLY ZERO; PLANK_SEAM_HALF at 1.8 texels could never reach its own floor because the texel grid straddles a board boundary; and the haze anchor was not key-preserving - groundHaze is concave, so BY JENSEN the mean blend landed at 0.4122 against 0.45, about 2 code values of unearned brightness. Solving the right integral moved the anchor 25.97 m -&gt; 22.80 m. ground-haze.test.ts RE-SOLVES IT AGAINST THE LIVE RIG, so it reds if the centring lane moves the camera, and keeps the wrong anchor as a must-fail arm.</p>
+<p>FOCAL HIERARCHY MEASURED, NOT ASSERTED: local RMS contrast by region before -&gt; after, player column 28.93 -&gt; 28.94, target face 19.60 -&gt; 19.60, sky 12.63 -&gt; 12.64. The player's column is still the highest-contrast region by 47 % and the pylons at 4.15 sit 7x below it. No regression against DESIGN.md constraint 5.</p>
+<p>PRICE, REPLICATED: six runs per arm. gpu p95 median 2.82 -&gt; 2.67 ms, p50 median 0.715 -&gt; 0.895, p50 ranges 0.53-0.93 and 0.61-1.54. THE p50 SHIFT IS NOT SEPARATED AT n=6 - the ranges overlap and the two lowest after-runs sit inside the before range. 11 of 12 runs MET; the one MISSED was on a non-GPU row at p50 1.54, i.e. contention.</p>
+<p>THE INSTRUMENT CAVEAT TO CARRY FORWARD: the dead-flat metric measures structure at 1.25 % of frame height, so it is BLIND to the ground's ramp, which is structure at 27.5 %. That is why the whole-frame number only moved 43.3 -&gt; 39.2 while the ground changed completely. The column profile is the instrument that sees it.</p>
+<p>NOT DONE, AND THE FIRST IS THE BIGGEST REMAINING SURFACE: THE SKY DOME IS ~14.6 % OF FRAME AND FLAT, and it lives in src/world/proscenium.ts (piece 07's), so it was reported and not touched. A sky is ALLOWED to be a smooth gradient - booth-04 is 42.1 % flat - so this needs a DECISION, not necessarily a fix. The lane's measurement says THE DRAPE IS NOT THE WORST SURFACE. Also not done: no .jpg bar frame was decoded, because png.mjs is PNG-only and track-03-desert-highway-surface.jpg is the bar's actual ground reference - A REAL HOLE IN THE BAR COMPARISON. No motion judgement, so shimmer of the plank map at distance is unevidenced. No blind-pairs. All four pylons wear the same board layout. Measured at quality tier 0 only.</p></div>
+</article>
 </div>
 
 <h2>Recent log</h2>
 <ol class="log">
+<li><time>2026-08-25T19:05:35.187Z</time>MERGED spray-per-racer + piece11-r3-hud + textures. Tip 40da34e7d: 101 files / 2065 tests. Worktree sweep: 16 -&gt; 6, seven retired through the guard with evidence archived; the three still standing are locked and belong to sibling sessions or the live centring lane. Killed an orphaned vite preview (PID 51440) that had outlived its lane by 3 h and was holding a native binding that blocked its worktree's removal. FIXED TWO DEFECTS IN THE RETIRE TOOL ITSELF: it archived a .state.lock as evidence (a committed lock is a lock nobody can take - the board survived only because that stamp was 2 h stale), and it threw a raw spawn object on a failed removal instead of reporting the 17,790 files left behind. Both red-verified. CI: added archery-gauntlet to prototype-suites.yml because the layout gate was RED - 2065 tests gating nothing. Measured first: 81 s, 25 launches, fits the 25 min budget.</li>
+<li><time>2026-08-25T18:49:57.747Z</time>probe: is the board writable after the retire tool archived a .state.lock</li>
 <li><time>2026-08-25T18:27:53.135Z</time>07 r6 LANDED and refuted TWO numbers in the gap I wrote it: booth-01's pitch is 11 px = 0.57 %W not 46 px / 2.40 %, so the two bar frames STRADDLE round 5 and pitch alone convicts nothing - swing (5.8x) and panel value (2x) are what convicted. And the valance rule is proscenium.ts's own header, not DESIGN.md. Both recorded. The valance was occluding 42 px of the WINNER's rider, and the pin that should have caught it (climb.test.ts:82) was evaluating an x-independent expression so it read the same for all four lanes. Fixed, re-pinned off a real raster at both extreme lanes, with a control. CAR_HELMET_TOP no longer bounds the kart art - routed to piece 08.</li>
 <li><time>2026-08-25T18:26:10.528Z</time>MERGED 07 r6 + 12 r7 + 15 r1 into prototype/archery-gauntlet at dfb0ef8fa. Coordinator gates on the merged tree: tsc 0, eslint 0, 97 files / 1990 tests (floor this morning was 95 / 1891). One suite failure during the merge was NOT the build - keydrive's must-fail arm aborted at exit 3 (no verdict) because the launch-rate guard was saturated at 20/60s by my own fleet; it passed 55/55 on a quiet window. That is rule 8 catching the coordinator, not a lane.</li>
 <li><time>2026-08-25T18:06:33.605Z</time>14 r7 LANDED at 3fa5241fb, awaits a critic. Two gaps closed, same shape both times - a claim outrunning its guard. (1) The masking verdict is a RATIO and r6 generalised only its denominator; ACCURACY_BAND_LOCK came off one render and was scaled to nine rungs by assumption. New cue ladder renders the jet solo at all ten: -0.012 dB flat, so the assumption held and is now held. (2) The sign refusal mixer.ts attributed to audio-bed-model.mjs was in the OTHER tool and covered 8 of 11 beds, missing the worst-error one; now enforced at a DERIVED 0.0403 dB budget. Coordinator verified: tsc 0, eslint 0, 95 files / 1908 tests, no band-aids, no test removed. Lane falsified two of its own hypotheses and said so. r6's open item is NOT closed.</li>
@@ -404,8 +447,6 @@ THREE CONCLUSIONS, ALL MEASURED: it is NOT filtering - in the margin run the sam
 <li><time>2026-08-25T13:54:05.194Z</time>07 r4 landed and audited: 88 files / 1697 tests, zero test deletions. The flare is BOUGHT not spent - the whole profile is capped UNDER round 3's narrowest in-frame reach, so the panel is a strict subset of r3's columns at every row and cannot clip lane 3. Clear gap goes 2-3 px to 61-72 px</li>
 <li><time>2026-08-25T13:20:25.279Z</time>16 r4 narrowed the stutter to a line: all 11 long frames land inside [OUTCOME_DELAY_S, OUTCOME_DELAY_S+POP_S] = [0.600s, 0.950s], and flow.ts:306 fires its one scheduled beat at 0.6s - the banner pop01 ramp and, on a win, burstCount++. That is 12's +667ms burst seen from the other side, and 12 has been sent it mid-round</li>
 <li><time>2026-08-25T13:20:25.216Z</time>16 r4 landed and audited: deleting align()'s per-copy transform takes the fifteen copies from 15/15 resampled to 0/15, and the host nudge is proved LOAD-BEARING by a controlled pair - 1 device px of ancestor offset leaves all fifteen bit-identical, 0.5 device px moves 16.68 percent. wall-grid retired rather than repaired; 39 tests out, 47 in, net +8</li>
-<li><time>2026-08-25T13:16:12.268Z</time>CI, from 05's critic: the flake is LOCAL-ONLY. One lane means an empty queue and the guards never hold. It is a reason to fix the nesting before adding CI, not a reason CI would be red</li>
-<li><time>2026-08-25T13:16:12.214Z</time>OPERATIONAL, measured live: the shared permit ledger read 19 launches in the last 60s against a ceiling of 20, 67 in 300s, 136 in 900s. This machine sits ONE launch under the ceiling at current lane count - the rate guard is doing its job, and it is the reason not to widen the fleet</li>
 </ol>
 
 <footer>
