@@ -82,12 +82,12 @@ a { color:var(--drape); }
 <header class="top">
   <h1>Bullseye Derby Run Board</h1>
   <p class="sub">Every piece, the gap its last critic named, and what is in flight.</p>
-  <p class="stamp">state.json updated 2026-08-25T19:05:35.187Z · page generated from the live board</p>
+  <p class="stamp">state.json updated 2026-08-25T19:27:15.010Z · page generated from the live board</p>
   <ul class="tally">
     <li><b>0</b> building</li>
-    <li><b>11</b> round</li>
+    <li><b>12</b> round</li>
     <li><b>1</b> pending</li>
-    <li><b>7</b> passed</li>
+    <li><b>6</b> passed</li>
   </ul>
   <div class="perf">perf: fps=60  p99=16.8  gpuP95=3.85  at=2026-08-25T18:27:14.690Z</div>
 </header>
@@ -171,14 +171,27 @@ ONE NUMBER, 0.03 TO 0.05, TURNS TWO OF THE FOUR NAMED CONTROLS FROM RED TO GREEN
 <p>ON THE CI QUESTION, and this matters for the decision Adam is holding: THIS FLAKE IS LOCAL-ONLY. One lane means an empty queue and the guards never hold. It is a reason to fix the nesting BEFORE adding CI, not a reason CI will be red.</p>
 <p>CONSTRAINT ON THIS CRITIC's RUN: its worktree isolation was pinned to a FraggleRock worktree rather than FraggleRock-ag, so all git and all writes to the shared checkout were refused. It did every mutation in a throwaway copy under TEMP with a junction to the real node_modules and cleaned up afterwards. IT LANDED NOTHING - the fixes above need a lane with write access. It also did NOT drive tools/keydrive.mjs against a real browser build; every keydrive claim is textual or reproduced on the in-process instrument, which matched the browser sidecar's 4.990955 m exactly.</p></div>
 </article>
-<article class="piece s-passed" id="p06">
+<article class="piece s-round" id="p06">
   <header>
     <span class="num">06</span>
     <h3>Renderer + camera rig</h3>
-    <span class="round">r4</span>
-    <span class="status">passed</span>
+    <span class="round">r5</span>
+    <span class="status">round</span>
   </header>
-  <div class="gap"><p>PASSED r4. Critic confirmed travel and arrival on its OWN instrument (223.1px measured, extrapolating to ~249px/23% at the finish pin; all four cars physically at the gate beam at t=66). Claim '0.24 is the physical max' overstated - true max 0.2834 - but claiming the rest drives gate finials to 0.9962 of frame, so it is a composition trade, not a defect.</p></div>
+  <div class="gap"><p>CENTRING LANDED AND MERGED at 27f0bcf5d. User-reported: 'the game itself isn't centered on the screen - looks like it's pushed to the right so you can see the carnival tent in the background.' Coordinator-verified: tsc 0, eslint 0, 102 files / 2092 tests, no band-aid spelling, no GPU guard touched, PIN_TARGET_FRACTION and PIN_HORIZON_FRACTION UNTOUCHED, 9 test registrations added against 3 removed with a stronger successor for each.</p>
+<p>THE LANE REJECTED EVERY OPTION IN ITS BRIEF AND WAS RIGHT TO. The conflict is arithmetic, not taste: FOUR LANES AT AN EVEN PITCH WITH THE PLAYER ON ONE OF THEM PUTS THE BANK'S MIDPOINT HALF A PITCH - 1.2 m - OFF THE PLAYER'S COLUMN. They cannot both have the middle.</p>
+<p>AND IT PROVED OPTION 2 IMPOSSIBLE RATHER THAN DECLINING IT. camera.ts:74's reason was right but its wording was not: the load-bearing property is not 'dead centre', it is THE CAMERA'S OWN X. The column is three points on depth planes 8.65 m apart (muzzle z 3.4, bullseye z 0, kart z -5.25) and ONLY THE AXIS PROJECTS TO THE SAME SCREEN X AT EVERY DEPTH. Measured: translating the world the 1.2 m that would centre the bank puts the muzzle at NDC -0.415 against the kart's -0.164 - 12.5 % of frame width, A DIAGONAL RATHER THAN A COLUMN. A yaw does the same. It ships as a control: 'the column cannot be bought by moving the world'.</p>
+<pre>SO IT SHEARED THE FRUSTUM (three.js filmOffset, an architect's shift lens): a constant added to every projected NDC x at every depth. NOTHING INSIDE THE PICTURE MOVES RELATIVE TO ANYTHING ELSE; ONLY THE FRAME MOVES. The bank gets frame centre and the column stays exactly vertical and exactly depth-independent, riding columnFractionX - 0.4178 of width at 16:9.
+    window            L/R before   L/R after
+    1920x1080            2.52         0.97
+    3840x1080            1.26         0.99
+    1280x1024 (letterbox)2.52         0.97
+THE CONTROL SEPARATES: everything painted that is NOT the bank, the sky or the midway reads 0.4910 / 0.4994 / 0.4908 BEFORE AND AFTER - so the bank was the whole of the imbalance, and an instrument that returned 0.5 for any set could not have said that. The pre-shear arm REGENERATES every before-number, so none of it is quoted from a gitignored path.</pre>
+<p>WHAT IT COSTS, STATED RATHER THAN BURIED: the muzzle, bullseye and player's kart leave frame centre (0.4178 at 16:9 to 0.4589 at 32:9 - the same 0.041 of aspect drift the bank used to carry). THE BOOTH COUNTER CANNOT BE CENTRED BY ANY SINGLE OFFSET - it is a rigid 13x8 m box under a depth-proportional shear, near face wants +0.24 and far face +0.90; its anchor takes the mid-depth +0.573 and the residual is sub-pixel across its own depth. EDGE_BOTTOM 0.80 -&gt; 0.77, and the pin defining it now measures BOTH frame edges - it only ever walked in from the right. Volume-control clearances halve (0.282h -&gt; 0.136h to lane 1, 0.574h -&gt; 0.428h to the column); both still clear and the stale round numbers are replaced by measured ones.</p>
+<p>PIECE 07's GEOMETRY IS SAFE BY CONSTRUCTION, NOT BY LUCK: a constant NDC offset CANCELS IN ANY DIFFERENCE, so no two world points change their screen separation and everything solved FROM the frame keeps its screen position exactly. climb.test.ts measures rows and is untouched; VALANCE_CLEAR_ROWS unchanged. drape-margin's 1 px pin is RE-DERIVED, NOT WIDENED - the two anchors now sit at different |x| so the fold rank's depth scales the sides by exactly 2K(rho-1), and shearReachBudgetPx() computes it (2.4 px at 1920x1080) instead of a constant, with a new arm pinning the RESIDUAL'S SHAPE: 0 at the top row ramping monotonically to 4 at the hem, which a wrongly-built leg would not do. One consequence it FIXED rather than accepted: round 3's straight-cylinder control stopped reding because the shear alone would have fixed round 3's defect, so the control is now installed on the UNSHEARED frame corner and reproduces round 3's relationship exactly.</p>
+<p>FIXTURES RE-DERIVED WITH THE REASON RECORDED INSIDE EACH: raster-series.json's five live rows - karts BYTE-IDENTICAL, the frame moved a non-integer 158 px and re-phased an NxN resample, and THE SIGNATURE IS THAT THE RESIDUAL SHRINKS WITH N (0.0059 / 0.0037 / 0.0018 at N=24/48/96), which is re-phasing rather than a shape change. silhouette-t0.json re-captured on this build; lane windows TRANSLATED by -158 rather than re-solved, because the frame moving is not the art moving, and contents moved by less than round 6's own 0.9 % run-to-run spread.</p>
+<p>PERF: MET, gpu p95 2.68 ms, p50 0.64, presented p99 16.80, 0 long frames, boot 483 ms.</p>
+<p>NOT DONE: no PR opened. Did not eyeball the tail pose or results screen - TAIL_POSE.lookAt.x now reads BANK_CENTER_X instead of a duplicated 1.2 and applyTailPose clears filmOffset, both pinned, but only the start line was plated. INFERRED, NOT MEASURED: the ferris wheel at world x -24 is more tightly cropped by the left curtain at 16:9 than it was; it still reads, and if a critic calls it, it is one number in midway.ts.</p></div>
 </article>
 <article class="piece s-round" id="p07">
   <header>
