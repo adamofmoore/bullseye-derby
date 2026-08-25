@@ -82,11 +82,11 @@ a { color:var(--drape); }
 <header class="top">
   <h1>Bullseye Derby Run Board</h1>
   <p class="sub">Every piece, the gap its last critic named, and what is in flight.</p>
-  <p class="stamp">state.json updated 2026-08-25T20:47:02.675Z · page generated from the live board</p>
+  <p class="stamp">state.json updated 2026-08-25T22:50:04.284Z · page generated from the live board</p>
   <ul class="tally">
-    <li><b>0</b> building</li>
+    <li><b>1</b> building</li>
     <li><b>13</b> round</li>
-    <li><b>1</b> pending</li>
+    <li><b>0</b> pending</li>
     <li><b>5</b> passed</li>
   </ul>
   <div class="perf">perf: fps=60  p99=16.8  gpuP95=3.85  at=2026-08-25T18:27:14.690Z</div>
@@ -385,14 +385,14 @@ THREE CONCLUSIONS, ALL MEASURED: it is NOT filtering - in the margin run the sam
 <p>NOT RUN BY THE CRITIC, stated rather than claimed: the full vitest run (it excluded the five browser-dependent files to stay off the launch ledger after the permit gate held its first run at 20 launches in the last 60s, and got 83 files / 1479 tests green on the rest, consistent with the floor); harness:must-fail (REFUSED - a sibling lane holds port 6461); perf.mjs; lint.</p>
 <p>NOTHING LANDED - the critic's git against FraggleRock-ag was refused because worktree isolation pinned it to a FraggleRock worktree. Its two code blocks are the deliverable and are in this gap. THAT IS THE SECOND CRITIC BLOCKED THIS WAY.</p></div>
 </article>
-<article class="piece s-pending" id="p17">
+<article class="piece s-building" id="p17">
   <header>
     <span class="num">17</span>
     <h3>Whole-game blind A/B vs the bar</h3>
-    <span class="round">r0</span>
-    <span class="status">pending</span>
+    <span class="round">r1</span>
+    <span class="status">building</span>
   </header>
-  <div class="gap"><p class="empty">No gap recorded.</p></div>
+  <div class="gap"><p>R1 DISPATCHED. Pending at r0 since the board was made - the only row that asks whether the GAME is good rather than whether a part is. Blind A/B: our frames beside reference/bar/ frames, axes fixed and committed BEFORE our plates are looked at, judged on the bar table's three columns (Mario Kart World: karts/track/camera/HUD/results; Jamboree: booth and prize moment; Wonder: squash/stretch/anticipation/overshoot). Plates the SEQUENCE nobody has looked at - boot, countdown, mid-race, overtake, finish, Race Complete, leaderboard, prize pick - not a pose. Plus the measurable half (GPU p95 &lt;= 12ms at 1080p, p99 &lt; 20ms, zero frames &gt; 33ms, no long task &gt; 50ms, boot &lt; 3s) with p50 read beside p95 because contention on this machine moves only the tail. Output this round exists to produce: the single worst gap a player would notice, and which piece owns it.</p></div>
 </article>
 <article class="piece s-round" id="p18">
   <header>
@@ -422,6 +422,7 @@ BAR MEDIAN 2.3 %. OURS 19x THAT. Attributed by connected component as frame area
 
 <h2>Recent log</h2>
 <ol class="log">
+<li><time>2026-08-25T22:49:52.723Z</time>CI RED IS SEVEN ARMS, NOT SIX, AND PR #876's BODY MISCOUNTED IT - corrected. Identical set at d997138ff and 6652db10a: six in racefilm.test.mjs plus keydrive's --prove-control. All seven refuse for ONE reason - the runner has no GPU, Chromium falls back to SwiftShader, assertHardwareAdapter voids the sample. The guard is right every time; what is wrong is one level up - an arm whose precondition the environment cannot meet asserts NOTHING there and reports that as failure. Lane dispatched with every spelling of a skip forbidden; the shape it must follow already has precedent in-tree (keydrive.test.mjs:1048, racefilm.test.mjs:1003/:1034 assert the SOFTWARE behaviour explicitly with --bare and pin not.toMatch(/VOID, not slow/)). CAUGHT THE CANCELLED-RUN TRAP AGAIN: gh pr checks rendered layout and selftests as 'fail' when both were CANCELLED at ~10 min with nothing superseding them - read run.conclusion, not the checks table. Both re-run. PIECE 17 DISPATCHED at r1 - pending since the board was made, and the only row that asks whether the GAME is good rather than whether a part is.</li>
 <li><time>2026-08-25T20:47:02.674Z</time>01 r2: VOID names the claim it refuses. assertHardwareAdapter(adapter, claim) now THROWS without a claim, so a call site cannot be added without saying what it publishes. Hypothesis held 5 of 12, REFUTED for 6 with a term named for each - racefilm's are pixel ratios against a same-run reload floor that moves with the renderer, and --player-error rests on an 8000 ms boot deadline so a slow page reads as a refusing page. One honest exception recorded (stalled-clock has no manufacturable term; it is blocked by plumbing, not truth). Found a defect the guard was HIDING: a band whose floor is 0 W accepts a build with NO key bindings and keydrive would have certified it.</li>
 <li><time>2026-08-25T20:25:45.949Z</time>05 r7 + guard-ordering landed. dev-browser is GONE from bullseye-derby's spawn sites and rule 6 is now a TEST (test/dev-browser-ban.test.mjs) rather than prose - it flags the two offending lines in the pre-port tree and ships a fixture proving that naming the tool to ban it is allowed. Guard ordering fixed in THREE tools (keydrive, racefilm AND capture - capture had it too): identity now refuses before assertHardwareAdapter, VOID untouched and still ahead of every sample. Tip 103 files / 2102 tests, must-fail 21/21 red. CI: 2 of 14 red arms fixed; the other 12 are with a lane testing whether VOID should gate TIMING claims only - their assertions are binary behavioural facts, not timing. STILL OUTSTANDING: 20 dev-browser references across five OTHER prototypes.</li>
 <li><time>2026-08-25T19:05:35.187Z</time>MERGED spray-per-racer + piece11-r3-hud + textures. Tip 40da34e7d: 101 files / 2065 tests. Worktree sweep: 16 -&gt; 6, seven retired through the guard with evidence archived; the three still standing are locked and belong to sibling sessions or the live centring lane. Killed an orphaned vite preview (PID 51440) that had outlived its lane by 3 h and was holding a native binding that blocked its worktree's removal. FIXED TWO DEFECTS IN THE RETIRE TOOL ITSELF: it archived a .state.lock as evidence (a committed lock is a lock nobody can take - the board survived only because that stamp was 2 h stale), and it threw a raw spawn object on a failed removal instead of reporting the 17,790 files left behind. Both red-verified. CI: added bullseye-derby to prototype-suites.yml because the layout gate was RED - 2065 tests gating nothing. Measured first: 81 s, 25 launches, fits the 25 min budget.</li>
@@ -461,7 +462,6 @@ BAR MEDIAN 2.3 %. OURS 19x THAT. Attributed by connected component as frame area
 <li><time>2026-08-25T14:28:45.231Z</time>07 r4 critic: the fullness is NOT ON SCREEN. 91.6 percent of painted drape pixels are ONE cylinder and four meshes paint zero, because the proscenium post sits in front of the rank - and the drape anchor rides the frame corner while the post does not, so r4's own pin REDS at five of nine supported aspects including 1920x950</li>
 <li><time>2026-08-25T13:54:05.316Z</time>ROUTED TO 07's CRITIC, not decided by a lane: the garland eats 1548 px of car 1 at the finish pose, about 7 percent and 3.4x the 452 px the legibility file already calls acceptable. By DESIGN.md 4a and pre-existing, but the finish is the payoff moment. Depth or defect</li>
 <li><time>2026-08-25T13:54:05.245Z</time>07 r4 named the root of my own error: screenBoxOf(car3).x1 minus 1 sits 8-9 px PAST the kart's last painted pixel, so a bbox edge read against a painted edge manufactured the zero gap. Floor break turned out NOT BUILDABLE - the hem meets the deck 611 screen rows below the last row anyone sees - and that is pinned as a measurement rather than asserted</li>
-<li><time>2026-08-25T13:54:05.194Z</time>07 r4 landed and audited: 88 files / 1697 tests, zero test deletions. The flare is BOUGHT not spent - the whole profile is capped UNDER round 3's narrowest in-frame reach, so the panel is a strict subset of r3's columns at every row and cannot clip lane 3. Clear gap goes 2-3 px to 61-72 px</li>
 </ol>
 
 <footer>
